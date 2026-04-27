@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getAllArticles, groupByFolder } from '../lib/articles';
+
+const articles = await getAllArticles();
+const grouped = groupByFolder(articles);
+const sortedFolders = [...grouped.keys()].sort().reverse();
+---
+
+<Layout title="Sakuapi · 内容库">
+  <div class="max-w-4xl mx-auto px-6 py-12">
+    <div class="mb-12">
+      <h1 class="text-3xl font-bold tracking-tight mb-3">在日华人餐饮内容库</h1>
+      <p class="text-neutral-600 leading-relaxed">
+        共 <strong class="text-orange-700">{articles.length}</strong> 篇 · 按发布批次归档 · 内部团队共享
+      </p>
+    </div>
+
+    {sortedFolders.map((folder) => (
+      <section class="mb-12">
+        <h2 class="text-sm font-semibold text-neutral-500 mb-4 uppercase tracking-wider">
+          {folder}
+        </h2>
+        <div class="space-y-4">
+          {grouped.get(folder)!.map((article) => (
+            <a
+              href={`/articles/${article.slug}/`}
+              class="block group p-5 bg-white border border-neutral-200 rounded-lg hover:border-orange-400 hover:shadow-sm transition"
+            >
+              <h3 class="text-lg font-semibold text-neutral-900 group-hover:text-orange-700 transition mb-2 leading-snug">
+                {article.title}
+              </h3>
+              {article.excerpt && (
+                <p class="text-sm text-neutral-600 leading-relaxed line-clamp-2">
+                  {article.excerpt}
+                </p>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</Layout>
