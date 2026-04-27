@@ -6,7 +6,8 @@ interface Props {
   description?: string;
 }
 
-const { title = 'Sakuapi', description = '在日华人餐饮内容站' } = Astro.props;
+const { title = 'Sakuapi', description = '内部内容站' } = Astro.props;
+import { GROUPS } from '../lib/groups';
 ---
 
 <!doctype html>
@@ -23,10 +24,14 @@ const { title = 'Sakuapi', description = '在日华人餐饮内容站' } = Astro
     <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2 group">
         <span class="text-xl font-bold tracking-tight text-orange-700">Sakuapi</span>
-        <span class="text-sm text-neutral-500 hidden sm:inline">/ 在日中餐内容库</span>
+        <span class="text-sm text-neutral-500 hidden sm:inline">/ 内部内容站</span>
       </a>
-      <nav class="flex items-center gap-5 text-sm">
-        <a href="/" class="text-neutral-700 hover:text-orange-700 transition">文章</a>
+      <nav class="flex items-center gap-4 text-sm">
+        {GROUPS.map((g) => (
+          <a href={`/${g.key}/`} class="text-neutral-700 hover:text-orange-700 transition hidden md:inline">
+            {g.name}
+          </a>
+        ))}
         <a href="/about" class="text-neutral-700 hover:text-orange-700 transition">关于</a>
       </nav>
     </div>

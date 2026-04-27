@@ -3,11 +3,13 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 export type Article = CollectionEntry<'articles'>;
 
 export interface ArticleMeta {
-  slug: string;
+  slug: string;       // 完整路径，例如 restaurant/2026-04-27/01-foo
+  group: string;      // 一级目录，例如 restaurant
+  batch: string;      // 二级目录（通常是日期），例如 2026-04-27
+  filename: string;   // 文件名（无扩展名）
   title: string;
   date: string;
   excerpt: string;
-  folder: string;
   entry: Article;
 }
 
@@ -39,26 +41,36 @@ export async function getAllArticles(): Promise<ArticleMeta[]> {
   return entries
     .map((entry) => {
       const slug = entry.id.replace(/\.md$/, '');
-      const folder = slug.split('/')[0] || '';
-      const filenameTitle = (slug.split('/').pop() || slug).replace(/^\d+-/, '');
+      const parts = slug.split('/');
+      const group = parts[0] || '';
+      const batch = parts[1] || '';
+      const filename = parts[parts.length - 1] || slug;
+      const filenameTitle = filename.replace(/^\d+-/, '');
       return {
         slug,
+        group,
+        batch,
+        filename,
         title: entry.data.title || extractTitle(entry.body || '', filenameTitle),
         date: extractDate(slug, entry.data.date),
         excerpt: extractExcerpt(entry.body || ''),
-        folder,
         entry,
       };
     })
     .sort((a, b) => (b.date + b.slug).localeCompare(a.date + a.slug));
 }
 
-export function groupByFolder(articles: ArticleMeta[]): Map<string, ArticleMeta[]> {
+export async function getArticlesByGroup(groupKey: string): Promise<ArticleMeta[]> {
+  const all = await getAllArticles();
+  return all.filter((a) => a.group === groupKey);
+}
+
+export function groupByBatch(articles: ArticleMeta[]): Map<string, ArticleMeta[]> {
   const groups = new Map<string, ArticleMeta[]>();
   for (const article of articles) {
-    const list = groups.get(article.folder) || [];
+    const list = groups.get(article.batch) || [];
     list.push(article);
-    groups.set(article.folder, list);
+    groups.set(article.batch, list);
   }
   return groups;
 }

@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getAllArticles } from '../lib/articles';
+import { getGroup, colorClasses } from '../lib/groups';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articles = await getAllArticles();
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const groupInfo = getGroup(article.group);
+const c = colorClasses(groupInfo?.color || 'neutral');
+const { Content } = await render(article.entry);
+---
+
+<Layout title={`${article.title} · Sakuapi`} description={article.excerpt}>
+  <article class="max-w-3xl mx-auto px-6 py-12">
+    <div class="mb-8">
+      <a href={`/${article.group}/`} class={`text-sm text-neutral-500 ${c.hover} transition`}>
+        ← {groupInfo?.name || article.group}
+      </a>
+    </div>
+
+    <div class="text-xs text-neutral-500 mb-2 uppercase tracking-wider">
+      {groupInfo?.name} · {article.batch}
+    </div>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <div class="mt-16 pt-8 border-t border-neutral-200 flex justify-between text-sm">
+      <a href={`/${article.group}/`} class={`text-neutral-500 ${c.hover} transition`}>
+        ← {groupInfo?.name}
+      </a>
+      <a href="/" class="text-neutral-500 hover:text-neutral-800 transition">全部分组 →</a>
+    </div>
+  </article>
+</Layout>

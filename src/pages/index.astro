@@ -1,44 +1,41 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getAllArticles, groupByFolder } from '../lib/articles';
+import { GROUPS, colorClasses } from '../lib/groups';
+import { getAllArticles } from '../lib/articles';
 
 const articles = await getAllArticles();
-const grouped = groupByFolder(articles);
-const sortedFolders = [...grouped.keys()].sort().reverse();
+const counts = new Map<string, number>();
+for (const a of articles) counts.set(a.group, (counts.get(a.group) || 0) + 1);
 ---
 
-<Layout title="Sakuapi · 内容库">
-  <div class="max-w-4xl mx-auto px-6 py-12">
+<Layout title="Sakuapi · 内部内容站">
+  <div class="max-w-5xl mx-auto px-6 py-12">
     <div class="mb-12">
-      <h1 class="text-3xl font-bold tracking-tight mb-3">在日华人餐饮内容库</h1>
+      <h1 class="text-3xl font-bold tracking-tight mb-3">内部内容站</h1>
       <p class="text-neutral-600 leading-relaxed">
-        共 <strong class="text-orange-700">{articles.length}</strong> 篇 · 按发布批次归档 · 内部团队共享
+        按小组分类的内部资料库 · 共 <strong>{articles.length}</strong> 篇
       </p>
     </div>
 
-    {sortedFolders.map((folder) => (
-      <section class="mb-12">
-        <h2 class="text-sm font-semibold text-neutral-500 mb-4 uppercase tracking-wider">
-          {folder}
-        </h2>
-        <div class="space-y-4">
-          {grouped.get(folder)!.map((article) => (
-            <a
-              href={`/articles/${article.slug}/`}
-              class="block group p-5 bg-white border border-neutral-200 rounded-lg hover:border-orange-400 hover:shadow-sm transition"
-            >
-              <h3 class="text-lg font-semibold text-neutral-900 group-hover:text-orange-700 transition mb-2 leading-snug">
-                {article.title}
-              </h3>
-              {article.excerpt && (
-                <p class="text-sm text-neutral-600 leading-relaxed line-clamp-2">
-                  {article.excerpt}
-                </p>
-              )}
-            </a>
-          ))}
-        </div>
-      </section>
-    ))}
+    <div class="grid sm:grid-cols-2 gap-5">
+      {GROUPS.map((g) => {
+        const c = colorClasses(g.color);
+        const count = counts.get(g.key) || 0;
+        return (
+          <a
+            href={`/${g.key}/`}
+            class={`block group p-6 bg-white border border-neutral-200 rounded-lg ${c.border} hover:shadow-sm transition`}
+          >
+            <div class="flex items-baseline justify-between mb-2">
+              <h2 class={`text-xl font-semibold text-neutral-900 ${c.text} transition`}>
+                {g.name}
+              </h2>
+              <span class="text-sm text-neutral-500">{count} 篇</span>
+            </div>
+            <p class="text-sm text-neutral-600 leading-relaxed">{g.description}</p>
+          </a>
+        );
+      })}
+    </div>
   </div>
 </Layout>

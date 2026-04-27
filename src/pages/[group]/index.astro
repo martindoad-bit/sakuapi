@@ -1,0 +1,58 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { GROUPS, getGroup, colorClasses } from '../../lib/groups';
+import { getArticlesByGroup, groupByBatch } from '../../lib/articles';
+
+export async function getStaticPaths() {
+  return GROUPS.map((g) => ({ params: { group: g.key } }));
+}
+
+const { group } = Astro.params;
+const groupInfo = getGroup(group!)!;
+const articles = await getArticlesByGroup(group!);
+const grouped = groupByBatch(articles);
+const sortedBatches = [...grouped.keys()].sort().reverse();
+const c = colorClasses(groupInfo.color);
+---
+
+<Layout title={`${groupInfo.name} · Sakuapi`}>
+  <div class="max-w-4xl mx-auto px-6 py-12">
+    <div class="mb-2">
+      <a href="/" class="text-sm text-neutral-500 hover:text-neutral-800 transition">← 全部分组</a>
+    </div>
+
+    <div class="mb-10">
+      <h1 class="text-3xl font-bold tracking-tight mb-2">{groupInfo.name}</h1>
+      <p class="text-neutral-600">{groupInfo.description} · {articles.length} 篇</p>
+    </div>
+
+    {articles.length === 0 ? (
+      <div class="text-center py-16 text-neutral-500 border border-dashed border-neutral-300 rounded-lg">
+        这个组暂时还没有内容
+      </div>
+    ) : (
+      sortedBatches.map((batch) => (
+        <section class="mb-10">
+          <h2 class="text-sm font-semibold text-neutral-500 mb-4 uppercase tracking-wider">
+            {batch}
+          </h2>
+          <div class="space-y-4">
+            {grouped.get(batch)!.map((article) => (
+              <a
+                href={`/${article.slug}/`}
+                class={`block group p-5 bg-white border border-neutral-200 rounded-lg ${c.border} hover:shadow-sm transition`}
+              >
+                <h3 class={`text-lg font-semibold text-neutral-900 ${c.text} transition mb-2 leading-snug`}>
+                  {article.title}
+                </h3>
+                {article.excerpt && (
+                  <p class="text-sm text-neutral-600 leading-relaxed line-clamp-2">{article.excerpt}</p>
+                )}
+              </a>
+            ))}
+          </div>
+        </section>
+      ))
+    )}
+  </div>
+</Layout>
