@@ -13,7 +13,7 @@ else
   exit 1
 fi
 
-echo "🔄 同步最新文章..."
+echo "🔄 同步 skill 草稿（仅已配置的组，不影响其他组）..."
 ./scripts/sync-articles.sh
 
 echo "🏗️  构建..."
