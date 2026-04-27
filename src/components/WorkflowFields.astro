@@ -1,0 +1,107 @@
+---
+import { STATUSES, PLATFORMS } from '../lib/workflow';
+---
+
+<details open class="bg-neutral-50 border border-neutral-200 rounded-md p-4 mb-5">
+  <summary class="cursor-pointer text-sm font-medium text-neutral-700 select-none">
+    📋 协作信息（状态 / 平台 / 拍摄日 / 责任人 等）
+  </summary>
+
+  <div class="mt-4 grid sm:grid-cols-2 gap-4">
+    <label class="block">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">状态</span>
+      <select id="wf-status" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm bg-white">
+        <option value="">— 未设置 —</option>
+        {STATUSES.map((s) => (
+          <option value={s.key}>{s.label}</option>
+        ))}
+      </select>
+    </label>
+
+    <label class="block">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">责任人</span>
+      <input id="wf-assignee" type="text" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm" placeholder="主笔/拍摄/剪辑，如 王师傅、@老张" />
+    </label>
+
+    <label class="block">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">拍摄日期</span>
+      <input id="wf-shoot-date" type="date" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm" />
+    </label>
+
+    <label class="block">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">发布日期</span>
+      <input id="wf-publish-date" type="date" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm" />
+    </label>
+
+    <label class="block sm:col-span-2">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">发布链接（已发后填）</span>
+      <input id="wf-publish-url" type="url" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm" placeholder="https://..." />
+    </label>
+
+    <div class="block sm:col-span-2">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">平台（多选）</span>
+      <div id="wf-platforms" class="flex flex-wrap gap-2">
+        {PLATFORMS.map((p) => (
+          <label class="inline-flex items-center gap-1.5 text-sm bg-white border border-neutral-300 rounded-md px-2.5 py-1.5 cursor-pointer hover:border-orange-400 transition has-[:checked]:bg-orange-50 has-[:checked]:border-orange-400">
+            <input type="checkbox" value={p.key} class="accent-orange-600" />
+            <span>{p.emoji} {p.label}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <label class="block sm:col-span-2">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">标签（逗号分隔）</span>
+      <input id="wf-tags" type="text" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm" placeholder="租约, 踩坑, 干货" />
+    </label>
+
+    <label class="block sm:col-span-2">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">封面建议</span>
+      <input id="wf-cover-idea" type="text" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm" placeholder="店主在签合同那一刻的近镜头" />
+    </label>
+
+    <label class="block sm:col-span-2">
+      <span class="block text-xs font-medium text-neutral-600 mb-1">协作备注（内部用）</span>
+      <textarea id="wf-notes" rows="3" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm font-mono" placeholder="王老师审过，需要补对照表&#10;拍摄要带房产合同道具"></textarea>
+    </label>
+  </div>
+</details>
+
+<script is:inline>
+  // 工作流字段读写工具，挂在 window 上让父页面用
+  window.SakuapiWF = {
+    read() {
+      const get = (id) => (document.getElementById(id)?.value || '').trim();
+      const platforms = Array.from(document.querySelectorAll('#wf-platforms input:checked')).map((el) => el.value);
+      const tagsRaw = get('wf-tags');
+      const tags = tagsRaw ? tagsRaw.split(/[,，]/).map((t) => t.trim()).filter(Boolean) : [];
+      return {
+        status: get('wf-status') || undefined,
+        assignee: get('wf-assignee') || undefined,
+        shoot_date: get('wf-shoot-date') || undefined,
+        publish_date: get('wf-publish-date') || undefined,
+        publish_url: get('wf-publish-url') || undefined,
+        platform: platforms.length ? platforms : undefined,
+        tags: tags.length ? tags : undefined,
+        cover_idea: get('wf-cover-idea') || undefined,
+        notes: get('wf-notes') || undefined,
+      };
+    },
+    write(fm) {
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v ?? ''; };
+      set('wf-status', fm.status);
+      set('wf-assignee', fm.assignee);
+      set('wf-shoot-date', fm.shoot_date);
+      set('wf-publish-date', fm.publish_date);
+      set('wf-publish-url', fm.publish_url);
+      set('wf-tags', Array.isArray(fm.tags) ? fm.tags.join(', ') : (fm.tags || ''));
+      set('wf-cover-idea', fm.cover_idea);
+      set('wf-notes', fm.notes);
+
+      const platforms = Array.isArray(fm.platform) ? fm.platform : (fm.platform ? [fm.platform] : []);
+      document.querySelectorAll('#wf-platforms input').forEach((el) => {
+        el.checked = platforms.includes(el.value);
+      });
+    },
+  };
+</script>

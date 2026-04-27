@@ -6,7 +6,16 @@ const articles = defineCollection({
   schema: z.object({
     title: z.string().optional(),
     date: z.string().optional(),
+    // 工作流字段
+    status: z.string().optional(),
+    assignee: z.string().optional(),
+    platform: z.array(z.string()).optional(),
+    shoot_date: z.string().optional(),
+    publish_date: z.string().optional(),
+    publish_url: z.string().optional(),
     tags: z.array(z.string()).optional(),
+    cover_idea: z.string().optional(),
+    notes: z.string().optional(),
     draft: z.boolean().optional(),
   }),
 });

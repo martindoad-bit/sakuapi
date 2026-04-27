@@ -1,5 +1,6 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import WorkflowFields from '../../components/WorkflowFields.astro';
 ---
 
 <AdminLayout title="编辑文章 · Sakuapi">
@@ -23,6 +24,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
 
     <form id="article-form" class="hidden bg-white border border-neutral-200 rounded-lg p-6 space-y-5">
+      <label class="block">
+        <span class="block text-sm font-medium text-neutral-700 mb-1">文章标题（显示用）</span>
+        <input id="f-title" type="text" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+      </label>
+
+      <WorkflowFields />
+
       <div>
         <div class="flex items-center justify-between mb-1">
           <span class="block text-sm font-medium text-neutral-700">正文（Markdown）</span>
@@ -49,6 +57,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script src="https://unpkg.com/marked@13.0.3/marked.min.js" is:inline></script>
   <script src="https://unpkg.com/easymde@2.18.0/dist/easymde.min.js" is:inline></script>
+  <script src="/admin/frontmatter.js" is:inline></script>
 
   <script is:inline>
     const params = new URLSearchParams(window.location.search);
@@ -58,6 +67,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     const loading = document.getElementById('loading');
     const form = document.getElementById('article-form');
     const pathDisplay = document.getElementById('path-display');
+    const titleInp = document.getElementById('f-title');
     const saveBtn = document.getElementById('save-btn');
     const saveAsNewBtn = document.getElementById('save-as-new-btn');
 
@@ -68,12 +78,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       throw new Error('invalid path');
     }
 
-    // 从 path 推 group（用于上传图片归类）
     const pathParts = path.replace(/^src\/content\/articles\//, '').split('/');
     const groupKey = pathParts[0] || 'shared';
 
     let easymde = null;
     let currentSha = '';
+    let currentFM = {};
 
     (async function bootstrap() {
       try {
@@ -81,10 +91,19 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const data = await r.json();
         if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
         currentSha = data.sha;
+
+        // 拆 frontmatter / body
+        const { frontmatter, body } = window.SakuapiFM.parseFrontmatter(data.content);
+        currentFM = frontmatter || {};
+
         loading.classList.add('hidden');
         form.classList.remove('hidden');
-        document.getElementById('f-content').value = data.content;
 
+        // 填表单
+        if (currentFM.title) titleInp.value = currentFM.title;
+        window.SakuapiWF.write(currentFM);
+
+        document.getElementById('f-content').value = body;
         easymde = new EasyMDE({
           element: document.getElementById('f-content'),
           spellChecker: false,
@@ -105,7 +124,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             'guide',
           ],
         });
-        easymde.value(data.content);
+        easymde.value(body);
       } catch (err) {
         loading.innerHTML = `<div class="text-red-600">加载失败: ${err.message}</div>`;
       }
@@ -148,12 +167,21 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       okBox.classList.add('hidden');
       if (!easymde) return;
 
-      const content = easymde.value();
-      if (!content.trim()) {
+      const body = easymde.value();
+      if (!body.trim()) {
         errBox.textContent = '正文不能为空';
         errBox.classList.remove('hidden');
         return;
       }
+
+      // 重组 frontmatter
+      const fm = window.SakuapiWF.read();
+      if (titleInp.value.trim()) fm.title = titleInp.value.trim();
+      // 保留原 frontmatter 里我们不管的字段
+      for (const k of Object.keys(currentFM)) {
+        if (!(k in fm) && currentFM[k] !== undefined) fm[k] = currentFM[k];
+      }
+      const content = window.SakuapiFM.serializeFrontmatter(fm, body);
 
       saveBtn.disabled = true;
       saveBtn.textContent = '保存中…';
@@ -181,10 +209,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     // ---------- 另存为新 ----------
     saveAsNewBtn.addEventListener('click', () => {
       if (!easymde) return;
-      const content = easymde.value();
+      const body = easymde.value();
+      const fm = window.SakuapiWF.read();
+      if (titleInp.value.trim()) fm.title = titleInp.value.trim();
       try {
-        // 把当前正文塞进 sessionStorage，给 new 页面用
-        sessionStorage.setItem('sakuapi-clone-content', content);
+        sessionStorage.setItem('sakuapi-clone-content', body);
+        sessionStorage.setItem('sakuapi-clone-frontmatter', JSON.stringify(fm));
         sessionStorage.setItem('sakuapi-clone-group', groupKey);
         window.location.href = '/admin/new?clone=1';
       } catch {

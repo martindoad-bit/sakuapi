@@ -1,27 +1,39 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { GROUPS } from '../../lib/groups';
+import { STATUSES, PLATFORMS } from '../../lib/workflow';
 
-// 序列化 groups 给 client 端 script 用
 const groupsJson = JSON.stringify(GROUPS);
+const statusesJson = JSON.stringify(STATUSES);
+const platformsJson = JSON.stringify(PLATFORMS);
 ---
 
 <AdminLayout title="文章管理 · Sakuapi">
   <div class="max-w-6xl mx-auto px-6 py-8">
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
       <div>
         <h1 class="text-2xl font-bold tracking-tight mb-1">文章管理</h1>
         <p class="text-sm text-neutral-600">所有改动会直接 commit 到 GitHub，几分钟后自动部署上线</p>
       </div>
-      <a
-        href="/admin/new"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition"
-      >
-        <span class="text-lg leading-none">+</span> 新建文章
-      </a>
+      <div class="flex items-center gap-2">
+        <a href="/admin/board" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📋 看板</a>
+        <a href="/admin/calendar" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📅 日历</a>
+        <a href="/admin/new" class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition">
+          <span class="text-lg leading-none">+</span> 新建文章
+        </a>
+      </div>
     </div>
 
     <div id="admin-error" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm"></div>
+
+    <!-- 状态筛选 -->
+    <div class="mb-6 flex flex-wrap items-center gap-2">
+      <span class="text-xs text-neutral-500 mr-1">筛选状态：</span>
+      <button data-filter-status="" class="filter-btn text-xs px-2.5 py-1 rounded-full border border-neutral-300 hover:border-orange-400 transition data-[active=true]:bg-orange-600 data-[active=true]:text-white data-[active=true]:border-orange-600" data-active="true">全部</button>
+      {STATUSES.map((s) => (
+        <button data-filter-status={s.key} class={`filter-btn text-xs px-2.5 py-1 rounded-full border transition ${s.bg} ${s.text} ${s.border} hover:opacity-80`}>{s.label}</button>
+      ))}
+    </div>
 
     <div id="admin-groups" class="grid gap-6 md:grid-cols-2"></div>
 
@@ -38,14 +50,17 @@ const groupsJson = JSON.stringify(GROUPS);
     </template>
 
     <template id="tpl-row">
-      <li class="py-2 flex items-center justify-between gap-3">
-        <div class="min-w-0 flex-1">
-          <div class="text-sm font-medium text-neutral-800 truncate" data-title></div>
-          <div class="text-xs text-neutral-500 mt-0.5 truncate" data-meta></div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0 text-xs">
-          <a class="px-2 py-1 text-orange-700 hover:bg-orange-50 rounded transition" data-edit>编辑</a>
-          <button class="px-2 py-1 text-red-600 hover:bg-red-50 rounded transition" data-del type="button">删除</button>
+      <li class="py-3" data-row>
+        <div class="flex items-center justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-medium text-neutral-800 truncate" data-title></div>
+            <div class="flex items-center gap-2 mt-1 flex-wrap" data-badges></div>
+            <div class="text-xs text-neutral-500 mt-1 truncate" data-meta></div>
+          </div>
+          <div class="flex items-center gap-1 shrink-0 text-xs">
+            <a class="px-2 py-1 text-orange-700 hover:bg-orange-50 rounded transition" data-edit>编辑</a>
+            <button class="px-2 py-1 text-red-600 hover:bg-red-50 rounded transition" data-del type="button">删除</button>
+          </div>
         </div>
       </li>
     </template>
@@ -62,18 +77,23 @@ const groupsJson = JSON.stringify(GROUPS);
     </template>
   </div>
 
-  <script is:inline define:vars={{ groupsJson }}>
+  <script is:inline define:vars={{ groupsJson, statusesJson, platformsJson }}>
     const GROUPS = JSON.parse(groupsJson);
+    const STATUSES = JSON.parse(statusesJson);
+    const PLATFORMS = JSON.parse(platformsJson);
+    const STATUS_BY_KEY = Object.fromEntries(STATUSES.map((s) => [s.key, s]));
+    const PLATFORM_BY_KEY = Object.fromEntries(PLATFORMS.map((p) => [p.key, p]));
+
     const root = document.getElementById('admin-groups');
     const errBox = document.getElementById('admin-error');
     const cardTpl = document.getElementById('tpl-card');
     const rowTpl = document.getElementById('tpl-row');
     const skelTpl = document.getElementById('tpl-skeleton');
 
-    function showError(msg) {
-      errBox.textContent = msg;
-      errBox.classList.remove('hidden');
-    }
+    let activeStatusFilter = '';
+    let allItems = [];
+
+    function showError(msg) { errBox.textContent = msg; errBox.classList.remove('hidden'); }
 
     function renderSkeleton() {
       root.innerHTML = '';
@@ -82,10 +102,64 @@ const groupsJson = JSON.stringify(GROUPS);
       }
     }
 
+    function buildBadges(item) {
+      const wrap = document.createElement('div');
+      wrap.className = 'flex items-center gap-1.5 flex-wrap';
+      const fm = item.frontmatter || {};
+
+      if (fm.status) {
+        const s = STATUS_BY_KEY[fm.status];
+        if (s) {
+          const b = document.createElement('span');
+          b.className = `text-xs px-2 py-0.5 rounded ${s.bg} ${s.text} ${s.border} border`;
+          b.textContent = s.label;
+          wrap.appendChild(b);
+        }
+      }
+      if (fm.assignee) {
+        const b = document.createElement('span');
+        b.className = 'text-xs px-2 py-0.5 rounded bg-neutral-100 text-neutral-700';
+        b.textContent = '@' + fm.assignee;
+        wrap.appendChild(b);
+      }
+      const platforms = Array.isArray(fm.platform) ? fm.platform : (fm.platform ? [fm.platform] : []);
+      for (const pk of platforms) {
+        const p = PLATFORM_BY_KEY[pk];
+        if (!p) continue;
+        const b = document.createElement('span');
+        b.className = 'text-xs px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700';
+        b.textContent = p.emoji + ' ' + p.label;
+        wrap.appendChild(b);
+      }
+      if (fm.shoot_date) {
+        const b = document.createElement('span');
+        b.className = 'text-xs px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200';
+        b.textContent = '🎬 ' + fm.shoot_date;
+        wrap.appendChild(b);
+      }
+      if (fm.publish_date) {
+        const b = document.createElement('span');
+        b.className = 'text-xs px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 border border-cyan-200';
+        b.textContent = '🚀 ' + fm.publish_date;
+        wrap.appendChild(b);
+      }
+      return wrap;
+    }
+
     function buildRow(item) {
       const node = rowTpl.content.cloneNode(true);
+      const li = node.querySelector('[data-row]');
+      const fm = item.frontmatter || {};
+      // 状态过滤
+      if (activeStatusFilter && fm.status !== activeStatusFilter) {
+        li.style.display = 'none';
+      }
+
       node.querySelector('[data-title]').textContent = item.title || item.filename.replace(/\.md$/, '');
       node.querySelector('[data-meta]').textContent = `${item.batch || '(无批次)'} / ${item.filename}`;
+      const badgeBox = node.querySelector('[data-badges]');
+      badgeBox.appendChild(buildBadges(item));
+
       const editBtn = node.querySelector('[data-edit]');
       editBtn.href = `/admin/edit?path=${encodeURIComponent(item.path)}`;
       const delBtn = node.querySelector('[data-del]');
@@ -94,9 +168,7 @@ const groupsJson = JSON.stringify(GROUPS);
     }
 
     async function onDelete(item, btn) {
-      if (!confirm(`确认删除？\n\n${item.title || item.filename}\n\n这会立即在 GitHub 上提交一个删除 commit，无法在网页里撤回（但 git 历史保留）。`)) {
-        return;
-      }
+      if (!confirm(`确认删除？\n\n${item.title || item.filename}\n\n这会立即在 GitHub 上提交一个删除 commit，无法在网页里撤回（但 git 历史保留）。`)) return;
       btn.disabled = true;
       btn.textContent = '删除中…';
       try {
@@ -111,26 +183,13 @@ const groupsJson = JSON.stringify(GROUPS);
       }
     }
 
-    async function load() {
-      renderSkeleton();
-      let data;
-      try {
-        const r = await fetch('/api/list');
-        data = await r.json();
-        if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
-      } catch (err) {
-        root.innerHTML = '';
-        showError('加载文章列表失败：' + err.message);
-        return;
-      }
-      const items = data.items || [];
+    function render() {
       const byGroup = new Map();
       for (const g of GROUPS) byGroup.set(g.key, []);
-      for (const item of items) {
+      for (const item of allItems) {
         if (!byGroup.has(item.group)) byGroup.set(item.group, []);
         byGroup.get(item.group).push(item);
       }
-
       root.innerHTML = '';
       for (const g of GROUPS) {
         const list = byGroup.get(g.key) || [];
@@ -147,7 +206,39 @@ const groupsJson = JSON.stringify(GROUPS);
         }
         root.appendChild(card);
       }
+      // 重新计算筛选后空组提示
+      document.querySelectorAll('section').forEach((sec) => {
+        const ul = sec.querySelector('ul');
+        if (!ul) return;
+        const visible = Array.from(ul.children).filter((li) => li.style.display !== 'none').length;
+        const empty = sec.querySelector('[data-empty]');
+        if (empty) empty.classList.toggle('hidden', visible > 0);
+      });
     }
+
+    async function load() {
+      renderSkeleton();
+      try {
+        const r = await fetch('/api/list?frontmatter=1');
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+        allItems = data.items || [];
+      } catch (err) {
+        root.innerHTML = '';
+        showError('加载文章列表失败：' + err.message);
+        return;
+      }
+      render();
+    }
+
+    // 筛选交互
+    document.querySelectorAll('.filter-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeStatusFilter = btn.dataset.filterStatus;
+        document.querySelectorAll('.filter-btn').forEach((b) => b.dataset.active = (b === btn).toString());
+        render();
+      });
+    });
 
     load();
   </script>

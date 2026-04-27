@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { getAllArticles } from '../lib/articles';
 import { getGroup, colorClasses } from '../lib/groups';
+import { getStatus, PLATFORM_BY_KEY } from '../lib/workflow';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -15,6 +16,10 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const groupInfo = getGroup(article.group);
 const c = colorClasses(groupInfo?.color || 'neutral');
+const status = article.status ? getStatus(article.status) : null;
+const platforms = (article.platform || [])
+  .map((k) => PLATFORM_BY_KEY[k])
+  .filter(Boolean);
 const { Content } = await render(article.entry);
 ---
 
@@ -30,15 +35,48 @@ const { Content } = await render(article.entry);
       {groupInfo?.name} · {article.batch}
     </div>
 
+    {(status || article.assignee || platforms.length > 0 || article.shoot_date || article.publish_date) && (
+      <div class="flex flex-wrap items-center gap-2 mb-6 text-xs">
+        {status && (
+          <span class={`px-2 py-1 rounded ${status.bg} ${status.text} ${status.border} border`}>{status.label}</span>
+        )}
+        {article.assignee && (
+          <span class="px-2 py-1 rounded bg-neutral-100 text-neutral-700">@{article.assignee}</span>
+        )}
+        {platforms.map((p) => (
+          <span class="px-2 py-1 rounded bg-neutral-100 text-neutral-700">{p.emoji} {p.label}</span>
+        ))}
+        {article.shoot_date && (
+          <span class="px-2 py-1 rounded bg-purple-50 text-purple-700 border border-purple-200">🎬 {article.shoot_date}</span>
+        )}
+        {article.publish_date && (
+          <span class="px-2 py-1 rounded bg-cyan-50 text-cyan-700 border border-cyan-200">🚀 {article.publish_date}</span>
+        )}
+        {article.publish_url && (
+          <a href={article.publish_url} target="_blank" rel="noopener" class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hover:underline">🔗 已发布链接</a>
+        )}
+      </div>
+    )}
+
     <div class="prose">
       <Content />
     </div>
+
+    {article.notes && (
+      <details class="mt-10 bg-amber-50 border border-amber-200 rounded-md p-4 text-sm">
+        <summary class="cursor-pointer font-medium text-amber-800">📝 协作备注（仅内部可见）</summary>
+        <div class="mt-3 whitespace-pre-wrap text-amber-900">{article.notes}</div>
+      </details>
+    )}
 
     <div class="mt-16 pt-8 border-t border-neutral-200 flex justify-between text-sm">
       <a href={`/${article.group}/`} class={`text-neutral-500 ${c.hover} transition`}>
         ← {groupInfo?.name}
       </a>
-      <a href="/" class="text-neutral-500 hover:text-neutral-800 transition">全部分组 →</a>
+      <div class="flex items-center gap-4">
+        <a href={`/admin/edit?path=src/content/articles/${article.slug}.md`} class="text-neutral-500 hover:text-orange-700 transition">编辑此文 →</a>
+        <a href="/" class="text-neutral-500 hover:text-neutral-800 transition">全部分组 →</a>
+      </div>
     </div>
   </article>
 </Layout>
