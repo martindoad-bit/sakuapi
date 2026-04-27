@@ -54,11 +54,24 @@ const groupsJson = JSON.stringify(GROUPS);
 
     (async function load() {
       let items = [];
+      let apiError = '';
       try {
         const r = await fetch('/api/list?frontmatter=1');
         const d = await r.json();
-        if (r.ok) items = d.items || [];
-      } catch {}
+        if (r.ok) {
+          items = d.items || [];
+        } else {
+          apiError = d.error || `HTTP ${r.status}`;
+        }
+      } catch (e) {
+        apiError = e.message || '网络错误';
+      }
+      if (apiError) {
+        const loadingEl = document.getElementById('recent-loading');
+        loadingEl.innerHTML = `<div class="p-4 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800">
+          API 暂不可用：${apiError}<br><span class="text-xs text-amber-700">如果你刚登录请刷新一次。如果仍然报错请联系管理员。</span>
+        </div>`;
+      }
 
       // 每组数量 + 状态分布
       const byGroup = new Map();

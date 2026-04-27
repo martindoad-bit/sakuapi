@@ -38,9 +38,6 @@ const path = Astro.url.pathname;
             {g.name}
           </a>
         ))}
-        <span class="hidden md:inline-block w-px h-5 bg-neutral-200 mx-2"></span>
-        <a href="/board" class:list={['px-3 py-1.5 rounded-md transition text-sm', path === '/board' ? 'bg-orange-50 text-orange-700 font-medium' : 'text-neutral-700 hover:bg-neutral-100']}>📋 看板</a>
-        <a href="/calendar" class:list={['px-3 py-1.5 rounded-md transition text-sm', path === '/calendar' ? 'bg-orange-50 text-orange-700 font-medium' : 'text-neutral-700 hover:bg-neutral-100']}>📅 日历</a>
       </nav>
       <div class="flex items-center gap-2 shrink-0">
         <a
@@ -60,7 +57,9 @@ const path = Astro.url.pathname;
               <div class="text-xs text-neutral-500">登录身份</div>
               <div id="user-email" class="text-neutral-800 truncate">…</div>
             </div>
-            <a href="/manage" class="block px-3 py-2 hover:bg-neutral-50 text-neutral-700">📂 全部文章（管理视图）</a>
+            <a href="/manage" class="block px-3 py-2 hover:bg-neutral-50 text-neutral-700">📂 全部文章</a>
+            <a href="/board" class="block px-3 py-2 hover:bg-neutral-50 text-neutral-700">📋 看板视图</a>
+            <a href="/calendar" class="block px-3 py-2 hover:bg-neutral-50 text-neutral-700">📅 日历视图</a>
             <a href="/about" class="block px-3 py-2 hover:bg-neutral-50 text-neutral-700">关于</a>
             <a href="/cdn-cgi/access/logout" class="block px-3 py-2 hover:bg-neutral-50 text-red-600">登出</a>
           </div>
