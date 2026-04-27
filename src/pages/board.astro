@@ -1,13 +1,13 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
-import { GROUPS } from '../../lib/groups';
-import { STATUSES } from '../../lib/workflow';
+import Layout from "../layouts/Layout.astro";
+import { GROUPS } from '../lib/groups';
+import { STATUSES } from '../lib/workflow';
 
 const groupsJson = JSON.stringify(GROUPS);
 const statusesJson = JSON.stringify(STATUSES);
 ---
 
-<AdminLayout title="看板 · Sakuapi">
+<Layout title="看板 · Sakuapi">
   <div class="max-w-full mx-auto px-6 py-8">
     <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
       <div>
@@ -15,9 +15,9 @@ const statusesJson = JSON.stringify(STATUSES);
         <p class="text-sm text-neutral-600">按状态分列，**拖拽卡片**改变状态（自动 commit 到 GitHub）</p>
       </div>
       <div class="flex items-center gap-2">
-        <a href="/admin" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📄 列表</a>
-        <a href="/admin/calendar" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📅 日历</a>
-        <a href="/admin/new" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition">+ 新建</a>
+        <a href="/" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📄 列表</a>
+        <a href="/calendar" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📅 日历</a>
+        <a href="/new" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition">+ 新建</a>
       </div>
     </div>
 
@@ -40,7 +40,7 @@ const statusesJson = JSON.stringify(STATUSES);
     </div>
   </div>
 
-  <script src="/admin/frontmatter.js" is:inline></script>
+  <script src="/scripts/frontmatter.js" is:inline></script>
 
   <script is:inline define:vars={{ groupsJson, statusesJson }}>
     const GROUPS = JSON.parse(groupsJson);
@@ -66,7 +66,7 @@ const statusesJson = JSON.stringify(STATUSES);
         ${fm.assignee ? `<div class="text-xs text-neutral-600 mb-1">@${escapeHtml(fm.assignee)}</div>` : ''}
         ${fm.shoot_date ? `<div class="text-xs text-purple-700">🎬 ${fm.shoot_date}</div>` : ''}
         ${fm.publish_date ? `<div class="text-xs text-cyan-700">🚀 ${fm.publish_date}</div>` : ''}
-        <a href="/admin/edit?path=${encodeURIComponent(item.path)}" class="text-xs text-orange-700 hover:underline mt-2 inline-block">编辑 →</a>
+        <a href="/edit?path=${encodeURIComponent(item.path)}" class="text-xs text-orange-700 hover:underline mt-2 inline-block">编辑 →</a>
       `;
 
       card.addEventListener('dragstart', (e) => {
@@ -183,4 +183,4 @@ const statusesJson = JSON.stringify(STATUSES);
       }
     })();
   </script>
-</AdminLayout>
+</Layout>

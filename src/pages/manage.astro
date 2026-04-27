@@ -1,14 +1,14 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
-import { GROUPS } from '../../lib/groups';
-import { STATUSES, PLATFORMS } from '../../lib/workflow';
+import Layout from "../layouts/Layout.astro";
+import { GROUPS } from '../lib/groups';
+import { STATUSES, PLATFORMS } from '../lib/workflow';
 
 const groupsJson = JSON.stringify(GROUPS);
 const statusesJson = JSON.stringify(STATUSES);
 const platformsJson = JSON.stringify(PLATFORMS);
 ---
 
-<AdminLayout title="文章管理 · Sakuapi">
+<Layout title="文章管理 · Sakuapi">
   <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
       <div>
@@ -16,9 +16,9 @@ const platformsJson = JSON.stringify(PLATFORMS);
         <p class="text-sm text-neutral-600">所有改动会直接 commit 到 GitHub，几分钟后自动部署上线</p>
       </div>
       <div class="flex items-center gap-2">
-        <a href="/admin/board" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📋 看板</a>
-        <a href="/admin/calendar" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📅 日历</a>
-        <a href="/admin/new" class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition">
+        <a href="/board" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📋 看板</a>
+        <a href="/calendar" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📅 日历</a>
+        <a href="/new" class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition">
           <span class="text-lg leading-none">+</span> 新建文章
         </a>
       </div>
@@ -161,7 +161,7 @@ const platformsJson = JSON.stringify(PLATFORMS);
       badgeBox.appendChild(buildBadges(item));
 
       const editBtn = node.querySelector('[data-edit]');
-      editBtn.href = `/admin/edit?path=${encodeURIComponent(item.path)}`;
+      editBtn.href = `/edit?path=${encodeURIComponent(item.path)}`;
       const delBtn = node.querySelector('[data-del]');
       delBtn.addEventListener('click', () => onDelete(item, delBtn));
       return node;
@@ -242,4 +242,4 @@ const platformsJson = JSON.stringify(PLATFORMS);
 
     load();
   </script>
-</AdminLayout>
+</Layout>

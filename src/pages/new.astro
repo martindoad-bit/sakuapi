@@ -1,18 +1,18 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
-import WorkflowFields from '../../components/WorkflowFields.astro';
-import { GROUPS } from '../../lib/groups';
+import Layout from "../layouts/Layout.astro";
+import WorkflowFields from '../components/WorkflowFields.astro';
+import { GROUPS } from '../lib/groups';
 
 const groupsJson = JSON.stringify(GROUPS);
 ---
 
-<AdminLayout title="新建文章 · Sakuapi">
+<Layout title="新建文章 · Sakuapi">
   <link rel="stylesheet" href="https://unpkg.com/easymde@2.18.0/dist/easymde.min.css" />
 
   <div class="max-w-5xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <a href="/admin" class="text-sm text-neutral-500 hover:text-orange-700 transition">← 返回列表</a>
+        <a href="/" class="text-sm text-neutral-500 hover:text-orange-700 transition">← 返回列表</a>
         <h1 class="text-2xl font-bold tracking-tight mt-1">新建文章</h1>
       </div>
     </div>
@@ -57,7 +57,7 @@ const groupsJson = JSON.stringify(GROUPS);
       </div>
 
       <div class="flex items-center justify-end gap-3 pt-2 border-t border-neutral-100">
-        <a href="/admin" class="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-800 transition">取消</a>
+        <a href="/" class="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-800 transition">取消</a>
         <button id="submit-btn" type="submit" class="px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
           提交并 commit
         </button>
@@ -69,7 +69,7 @@ const groupsJson = JSON.stringify(GROUPS);
 
   <script src="https://unpkg.com/marked@13.0.3/marked.min.js" is:inline></script>
   <script src="https://unpkg.com/easymde@2.18.0/dist/easymde.min.js" is:inline></script>
-  <script src="/admin/frontmatter.js" is:inline></script>
+  <script src="/scripts/frontmatter.js" is:inline></script>
 
   <script is:inline define:vars={{ groupsJson }}>
     const GROUPS = JSON.parse(groupsJson);
@@ -83,6 +83,9 @@ const groupsJson = JSON.stringify(GROUPS);
       groupSel.appendChild(opt);
     }
     if (GROUPS.some((g) => g.key === 'restaurant')) groupSel.value = 'restaurant';
+    // 从 ?group= query 预选
+    const qsGroup = new URL(window.location.href).searchParams.get('group');
+    if (qsGroup && GROUPS.some((g) => g.key === qsGroup)) groupSel.value = qsGroup;
 
     // ---------- date default ----------
     const dateInp = document.getElementById('f-date');
@@ -238,7 +241,7 @@ const groupsJson = JSON.stringify(GROUPS);
         try { easymde.clearAutosavedValue(); } catch {}
         okBox.innerHTML = `已提交！commit <a class="underline" target="_blank" href="${data.commitUrl}">${(data.commitSha || '').slice(0, 7)}</a> · 跳转中…`;
         okBox.classList.remove('hidden');
-        setTimeout(() => { window.location.href = '/admin'; }, 1200);
+        setTimeout(() => { window.location.href = `/${group}/`; }, 1200);
       } catch (err) {
         errBox.textContent = '提交失败: ' + err.message;
         errBox.classList.remove('hidden');
@@ -247,4 +250,4 @@ const groupsJson = JSON.stringify(GROUPS);
       }
     });
   </script>
-</AdminLayout>
+</Layout>

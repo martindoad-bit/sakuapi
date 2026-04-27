@@ -1,41 +1,128 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { GROUPS, colorClasses } from '../lib/groups';
-import { getAllArticles } from '../lib/articles';
+import { STATUSES } from '../lib/workflow';
 
-const articles = await getAllArticles();
-const counts = new Map<string, number>();
-for (const a of articles) counts.set(a.group, (counts.get(a.group) || 0) + 1);
+const statusesJson = JSON.stringify(STATUSES);
+const groupsJson = JSON.stringify(GROUPS);
 ---
 
-<Layout title="Sakuapi · 内部内容站">
-  <div class="max-w-5xl mx-auto px-6 py-12">
-    <div class="mb-12">
-      <h1 class="text-3xl font-bold tracking-tight mb-3">内部内容站</h1>
-      <p class="text-neutral-600 leading-relaxed">
-        按小组分类的内部资料库 · 共 <strong>{articles.length}</strong> 篇
-      </p>
+<Layout title="Sakuapi · 内容工作站">
+  <div class="max-w-5xl mx-auto px-6 py-10">
+    <div class="mb-10">
+      <h1 class="text-3xl font-bold tracking-tight mb-2">内容工作站</h1>
+      <p class="text-neutral-600">点小组进入文章列表 · 点 <a href="/new" class="text-orange-700 hover:underline">+ 新建</a> 写新稿 · 看 <a href="/board" class="text-orange-700 hover:underline">📋 看板</a> 跟进进度</p>
     </div>
 
-    <div class="grid sm:grid-cols-2 gap-5">
+    <!-- 4 组卡片 -->
+    <div class="grid sm:grid-cols-2 gap-4 mb-12">
       {GROUPS.map((g) => {
         const c = colorClasses(g.color);
-        const count = counts.get(g.key) || 0;
         return (
-          <a
-            href={`/${g.key}/`}
-            class={`block group p-6 bg-white border border-neutral-200 rounded-lg ${c.border} hover:shadow-sm transition`}
-          >
+          <a href={`/${g.key}/`} class={`block group p-6 bg-white border border-neutral-200 rounded-lg ${c.border} hover:shadow-sm transition`}>
             <div class="flex items-baseline justify-between mb-2">
-              <h2 class={`text-xl font-semibold text-neutral-900 ${c.text} transition`}>
-                {g.name}
-              </h2>
-              <span class="text-sm text-neutral-500">{count} 篇</span>
+              <h2 class={`text-xl font-semibold text-neutral-900 ${c.text} transition`}>{g.name}</h2>
+              <span class="text-sm text-neutral-500" data-group-count={g.key}>—</span>
             </div>
-            <p class="text-sm text-neutral-600 leading-relaxed">{g.description}</p>
+            <p class="text-sm text-neutral-600 leading-relaxed mb-3">{g.description}</p>
+            <div class="flex items-center gap-1 flex-wrap text-xs" data-group-statuses={g.key}></div>
           </a>
         );
       })}
     </div>
+
+    <!-- 最近活动 -->
+    <section>
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        最近活动
+        <span class="text-xs text-neutral-400 font-normal">最近修改的 8 篇</span>
+      </h2>
+      <div id="recent-loading" class="text-sm text-neutral-400">加载中…</div>
+      <div id="recent-list" class="hidden space-y-2"></div>
+    </section>
   </div>
+
+  <script is:inline define:vars={{ statusesJson, groupsJson }}>
+    const STATUSES = JSON.parse(statusesJson);
+    const GROUPS = JSON.parse(groupsJson);
+    const STATUS_BY_KEY = Object.fromEntries(STATUSES.map((s) => [s.key, s]));
+    const GROUP_BY_KEY = Object.fromEntries(GROUPS.map((g) => [g.key, g]));
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    (async function load() {
+      let items = [];
+      try {
+        const r = await fetch('/api/list?frontmatter=1');
+        const d = await r.json();
+        if (r.ok) items = d.items || [];
+      } catch {}
+
+      // 每组数量 + 状态分布
+      const byGroup = new Map();
+      for (const g of GROUPS) byGroup.set(g.key, { total: 0, statuses: new Map() });
+      for (const it of items) {
+        const g = byGroup.get(it.group);
+        if (!g) continue;
+        g.total++;
+        const s = (it.frontmatter || {}).status;
+        if (s) g.statuses.set(s, (g.statuses.get(s) || 0) + 1);
+      }
+      for (const g of GROUPS) {
+        const info = byGroup.get(g.key);
+        const cnt = document.querySelector(`[data-group-count="${g.key}"]`);
+        if (cnt) cnt.textContent = `${info.total} 篇`;
+        const sBox = document.querySelector(`[data-group-statuses="${g.key}"]`);
+        if (sBox) {
+          for (const [skey, n] of info.statuses.entries()) {
+            const s = STATUS_BY_KEY[skey];
+            if (!s) continue;
+            const span = document.createElement('span');
+            span.className = `px-1.5 py-0.5 rounded ${s.bg} ${s.text} border ${s.border}`;
+            span.textContent = `${s.label} ${n}`;
+            sBox.appendChild(span);
+          }
+        }
+      }
+
+      // 最近 8 篇
+      const recent = items
+        .filter((i) => i.path.endsWith('.md'))
+        .slice(0, 8);
+      const recentEl = document.getElementById('recent-list');
+      const loadingEl = document.getElementById('recent-loading');
+      if (recent.length === 0) {
+        loadingEl.textContent = '还没有文章。点上面的卡片进入小组开始写第一篇。';
+        return;
+      }
+      for (const it of recent) {
+        const g = GROUP_BY_KEY[it.group];
+        const fm = it.frontmatter || {};
+        const slug = it.path.replace(/^src\/content\/articles\//, '').replace(/\.md$/, '');
+        const status = fm.status ? STATUS_BY_KEY[fm.status] : null;
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between gap-3 p-3 bg-white border border-neutral-200 rounded-md hover:border-orange-300 transition group';
+        row.innerHTML = `
+          <div class="min-w-0 flex-1">
+            <a href="/${slug}/" class="block">
+              <div class="text-sm font-medium text-neutral-800 group-hover:text-orange-700 transition truncate">${escapeHtml(it.title)}</div>
+              <div class="text-xs text-neutral-500 mt-0.5">
+                ${escapeHtml(g?.name || it.group)} · ${escapeHtml(it.batch || '')}
+                ${fm.assignee ? ` · @${escapeHtml(fm.assignee)}` : ''}
+              </div>
+            </a>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            ${status ? `<span class="text-xs px-2 py-0.5 rounded ${status.bg} ${status.text} border ${status.border}">${status.label}</span>` : ''}
+            <a href="/edit?path=${encodeURIComponent(it.path)}" class="text-xs text-neutral-500 hover:text-orange-700 transition opacity-0 group-hover:opacity-100">编辑</a>
+          </div>
+        `;
+        recentEl.appendChild(row);
+      }
+      loadingEl.classList.add('hidden');
+      recentEl.classList.remove('hidden');
+    })();
+  </script>
 </Layout>

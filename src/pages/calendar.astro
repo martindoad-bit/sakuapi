@@ -1,13 +1,13 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
-import { GROUPS } from '../../lib/groups';
-import { STATUSES } from '../../lib/workflow';
+import Layout from "../layouts/Layout.astro";
+import { GROUPS } from '../lib/groups';
+import { STATUSES } from '../lib/workflow';
 
 const groupsJson = JSON.stringify(GROUPS);
 const statusesJson = JSON.stringify(STATUSES);
 ---
 
-<AdminLayout title="日历 · Sakuapi">
+<Layout title="日历 · Sakuapi">
   <div class="max-w-7xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
       <div>
@@ -15,9 +15,9 @@ const statusesJson = JSON.stringify(STATUSES);
         <p class="text-sm text-neutral-600">🎬 = 拍摄日 · 🚀 = 发布日 · 点击月份切换</p>
       </div>
       <div class="flex items-center gap-2">
-        <a href="/admin" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📄 列表</a>
-        <a href="/admin/board" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📋 看板</a>
-        <a href="/admin/new" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition">+ 新建</a>
+        <a href="/" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📄 列表</a>
+        <a href="/board" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-orange-400 hover:text-orange-700 transition">📋 看板</a>
+        <a href="/new" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md font-medium shadow-sm transition">+ 新建</a>
       </div>
     </div>
 
@@ -111,7 +111,7 @@ const statusesJson = JSON.stringify(STATUSES);
             : 'bg-cyan-100 text-cyan-800 border-cyan-200';
           const icon = e.kind === 'shoot' ? '🎬' : '🚀';
           const tip = `${g?.name || e.item.group}${fm.assignee ? ' · @' + fm.assignee : ''}`;
-          cellHtml += `<a href="/admin/edit?path=${encodeURIComponent(e.item.path)}" title="${escapeHtml(tip)}"
+          cellHtml += `<a href="/edit?path=${encodeURIComponent(e.item.path)}" title="${escapeHtml(tip)}"
             class="block text-xs px-1.5 py-0.5 rounded border ${baseClass} mb-0.5 truncate hover:opacity-80 transition">${icon} ${escapeHtml(e.item.title)}</a>`;
         }
         cellHtml += '</div>';
@@ -162,4 +162,4 @@ const statusesJson = JSON.stringify(STATUSES);
       }
     })();
   </script>
-</AdminLayout>
+</Layout>

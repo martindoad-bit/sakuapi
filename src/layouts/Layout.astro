@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { GROUPS } from '../lib/groups';
 
 interface Props {
   title?: string;
@@ -7,7 +8,7 @@ interface Props {
 }
 
 const { title = 'Sakuapi', description = '内部内容站' } = Astro.props;
-import { GROUPS } from '../lib/groups';
+const path = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -20,20 +21,51 @@ import { GROUPS } from '../lib/groups';
   <title>{title}</title>
 </head>
 <body class="min-h-screen">
-  <header class="border-b border-neutral-200 bg-white">
-    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2 group">
-        <span class="text-xl font-bold tracking-tight text-orange-700">Sakuapi</span>
-        <span class="text-sm text-neutral-500 hidden sm:inline">/ 内部内容站</span>
+  <header class="border-b border-neutral-200 bg-white sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 shrink-0">
+        <span class="text-lg font-bold tracking-tight text-orange-700">Sakuapi</span>
       </a>
-      <nav class="flex items-center gap-4 text-sm">
+      <nav class="flex items-center gap-1 text-sm flex-1 justify-center">
         {GROUPS.map((g) => (
-          <a href={`/${g.key}/`} class="text-neutral-700 hover:text-orange-700 transition hidden md:inline">
+          <a
+            href={`/${g.key}/`}
+            class:list={[
+              'px-3 py-1.5 rounded-md transition hidden md:inline-block',
+              path.startsWith(`/${g.key}`) ? 'bg-orange-50 text-orange-700 font-medium' : 'text-neutral-700 hover:bg-neutral-100',
+            ]}
+          >
             {g.name}
           </a>
         ))}
-        <a href="/about" class="text-neutral-700 hover:text-orange-700 transition">关于</a>
+        <span class="hidden md:inline-block w-px h-5 bg-neutral-200 mx-2"></span>
+        <a href="/board" class:list={['px-3 py-1.5 rounded-md transition text-sm', path === '/board' ? 'bg-orange-50 text-orange-700 font-medium' : 'text-neutral-700 hover:bg-neutral-100']}>📋 看板</a>
+        <a href="/calendar" class:list={['px-3 py-1.5 rounded-md transition text-sm', path === '/calendar' ? 'bg-orange-50 text-orange-700 font-medium' : 'text-neutral-700 hover:bg-neutral-100']}>📅 日历</a>
       </nav>
+      <div class="flex items-center gap-2 shrink-0">
+        <a
+          href="/new"
+          class="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-sm font-medium shadow-sm transition"
+        >
+          <span class="text-base leading-none">+</span> 新建
+        </a>
+        <div class="relative" id="user-menu-wrapper">
+          <button
+            id="user-menu-btn"
+            class="w-8 h-8 rounded-full bg-neutral-200 hover:bg-neutral-300 flex items-center justify-center text-sm font-medium text-neutral-700 transition"
+            title="账户"
+          >👤</button>
+          <div id="user-menu" class="hidden absolute right-0 top-full mt-1 w-56 bg-white border border-neutral-200 rounded-md shadow-lg py-1 text-sm">
+            <div class="px-3 py-2 border-b border-neutral-100">
+              <div class="text-xs text-neutral-500">登录身份</div>
+              <div id="user-email" class="text-neutral-800 truncate">…</div>
+            </div>
+            <a href="/manage" class="block px-3 py-2 hover:bg-neutral-50 text-neutral-700">📂 全部文章（管理视图）</a>
+            <a href="/about" class="block px-3 py-2 hover:bg-neutral-50 text-neutral-700">关于</a>
+            <a href="/cdn-cgi/access/logout" class="block px-3 py-2 hover:bg-neutral-50 text-red-600">登出</a>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -42,9 +74,32 @@ import { GROUPS } from '../lib/groups';
   </main>
 
   <footer class="border-t border-neutral-200 mt-20 py-8">
-    <div class="max-w-5xl mx-auto px-6 text-sm text-neutral-500">
-      <p>© {new Date().getFullYear()} Sakuapi · 内部内容站，仅供团队使用</p>
+    <div class="max-w-7xl mx-auto px-6 text-sm text-neutral-500 text-center">
+      © {new Date().getFullYear()} Sakuapi · 内部内容站
     </div>
   </footer>
+
+  <script is:inline>
+    // 拉用户邮箱显示在右上角
+    fetch('/api/me').then(r => r.json()).then(d => {
+      const el = document.getElementById('user-email');
+      if (el && d.email) el.textContent = d.email;
+    }).catch(() => {});
+
+    // 用户菜单 toggle
+    const btn = document.getElementById('user-menu-btn');
+    const menu = document.getElementById('user-menu');
+    if (btn && menu) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
+      });
+      document.addEventListener('click', (e) => {
+        if (!document.getElementById('user-menu-wrapper').contains(e.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+    }
+  </script>
 </body>
 </html>

@@ -17,17 +17,23 @@ const { article } = Astro.props;
 const groupInfo = getGroup(article.group);
 const c = colorClasses(groupInfo?.color || 'neutral');
 const status = article.status ? getStatus(article.status) : null;
-const platforms = (article.platform || [])
-  .map((k) => PLATFORM_BY_KEY[k])
-  .filter(Boolean);
+const platforms = (article.platform || []).map((k) => PLATFORM_BY_KEY[k]).filter(Boolean);
+const editPath = `src/content/articles/${article.slug}.md`;
 const { Content } = await render(article.entry);
 ---
 
 <Layout title={`${article.title} · Sakuapi`} description={article.excerpt}>
-  <article class="max-w-3xl mx-auto px-6 py-12">
-    <div class="mb-8">
+  <article class="max-w-3xl mx-auto px-6 py-10">
+    <!-- 顶部条 -->
+    <div class="flex items-center justify-between mb-8 gap-3 flex-wrap">
       <a href={`/${article.group}/`} class={`text-sm text-neutral-500 ${c.hover} transition`}>
         ← {groupInfo?.name || article.group}
+      </a>
+      <a
+        href={`/edit?path=${encodeURIComponent(editPath)}`}
+        class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-sm font-medium shadow-sm transition"
+      >
+        ✏️ 编辑此文
       </a>
     </div>
 
@@ -69,14 +75,16 @@ const { Content } = await render(article.entry);
       </details>
     )}
 
-    <div class="mt-16 pt-8 border-t border-neutral-200 flex justify-between text-sm">
+    <div class="mt-16 pt-8 border-t border-neutral-200 flex justify-between items-center text-sm">
       <a href={`/${article.group}/`} class={`text-neutral-500 ${c.hover} transition`}>
         ← {groupInfo?.name}
       </a>
-      <div class="flex items-center gap-4">
-        <a href={`/admin/edit?path=src/content/articles/${article.slug}.md`} class="text-neutral-500 hover:text-orange-700 transition">编辑此文 →</a>
-        <a href="/" class="text-neutral-500 hover:text-neutral-800 transition">全部分组 →</a>
-      </div>
+      <a
+        href={`/edit?path=${encodeURIComponent(editPath)}`}
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-orange-300 text-orange-700 hover:bg-orange-50 rounded-md text-sm font-medium transition"
+      >
+        ✏️ 编辑此文
+      </a>
     </div>
   </article>
 </Layout>
