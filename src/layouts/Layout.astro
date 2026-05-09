@@ -9,6 +9,7 @@ interface Props {
 
 const { title = 'Sakuapi', description = '内部内容站' } = Astro.props;
 const path = Astro.url.pathname;
+const onHiddenGroup = GROUPS.some(g => g.hidden && path.startsWith(`/${g.key}`));
 ---
 
 <!doctype html>
@@ -27,7 +28,7 @@ const path = Astro.url.pathname;
         <span class="text-lg font-bold tracking-tight text-orange-700">Sakuapi</span>
       </a>
       <nav class="flex items-center gap-1 text-sm flex-1 justify-center">
-        {GROUPS.filter(g => !g.hidden).map((g) => (
+        {!onHiddenGroup && GROUPS.filter(g => !g.hidden).map((g) => (
           <a
             href={`/${g.key}/`}
             class:list={[
