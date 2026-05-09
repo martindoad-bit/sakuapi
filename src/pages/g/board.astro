@@ -1,0 +1,153 @@
+---
+import LayoutG from '../../layouts/LayoutG.astro';
+import { STATUSES } from '../../lib/workflow';
+
+const statusesJson = JSON.stringify(STATUSES);
+const GROUP_KEY = 'gyosei';
+---
+
+<LayoutG title="看板 · Sakuapi">
+  <div class="max-w-full mx-auto px-6 py-8">
+    <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight mb-1">看板</h1>
+        <p class="text-sm text-neutral-600">按状态分列，拖拽卡片改变状态（自动 commit 到 GitHub）</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="/g/" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-teal-400 hover:text-teal-700 transition">📄 列表</a>
+        <a href="/g/calendar" class="px-3 py-2 text-sm border border-neutral-300 rounded-md hover:border-teal-400 hover:text-teal-700 transition">📅 日历</a>
+        <a href="/g/new" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md font-medium shadow-sm transition">+ 新建</a>
+      </div>
+    </div>
+
+    <div id="loading" class="text-center py-12 text-neutral-500">
+      <div class="inline-block w-6 h-6 border-2 border-neutral-300 border-t-teal-600 rounded-full animate-spin mb-3"></div>
+      <div>加载中…</div>
+    </div>
+
+    <div id="board" class="hidden grid gap-4" style="grid-template-columns: repeat(7, minmax(220px, 1fr)); overflow-x: auto;">
+    </div>
+  </div>
+
+  <script src="/scripts/frontmatter.js" is:inline></script>
+
+  <script is:inline define:vars={{ statusesJson, GROUP_KEY }}>
+    const STATUSES = JSON.parse(statusesJson);
+    const STATUS_BY_KEY = Object.fromEntries(STATUSES.map((s) => [s.key, s]));
+    let allItems = [];
+    const boardEl = document.getElementById('board');
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function buildCard(item) {
+      const fm = item.frontmatter || {};
+      const card = document.createElement('div');
+      card.className = 'bg-white border border-neutral-200 rounded-md p-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-teal-300 transition';
+      card.draggable = true;
+      card.dataset.path = item.path;
+      card.dataset.sha = item.sha || '';
+
+      card.innerHTML = `
+        <div class="text-xs text-neutral-500 mb-1">${item.batch || ''}</div>
+        <div class="text-sm font-medium text-neutral-800 leading-snug mb-2 line-clamp-2">${escapeHtml(item.title)}</div>
+        ${fm.assignee ? `<div class="text-xs text-neutral-600 mb-1">@${escapeHtml(fm.assignee)}</div>` : ''}
+        ${fm.shoot_date ? `<div class="text-xs text-purple-700">🎬 ${fm.shoot_date}</div>` : ''}
+        ${fm.publish_date ? `<div class="text-xs text-cyan-700">🚀 ${fm.publish_date}</div>` : ''}
+        <a href="/g/edit?path=${encodeURIComponent(item.path)}" class="text-xs text-teal-700 hover:underline mt-2 inline-block">编辑 →</a>
+      `;
+
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', item.path);
+        e.dataTransfer.effectAllowed = 'move';
+        card.classList.add('opacity-50');
+      });
+      card.addEventListener('dragend', () => card.classList.remove('opacity-50'));
+      return card;
+    }
+
+    function renderBoard() {
+      boardEl.innerHTML = '';
+      const cols = STATUSES.map((s) => ({ status: s, items: [] }));
+      const noStatus = [];
+      for (const item of allItems) {
+        const fm = item.frontmatter || {};
+        const idx = STATUSES.findIndex((s) => s.key === fm.status);
+        if (idx >= 0) cols[idx].items.push(item);
+        else noStatus.push(item);
+      }
+      cols[0].items.push(...noStatus);
+
+      for (const col of cols) {
+        const colEl = document.createElement('div');
+        colEl.className = `${col.status.bg} rounded-lg p-3`;
+        colEl.dataset.status = col.status.key;
+        colEl.innerHTML = `
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold ${col.status.text}">${col.status.label}</h3>
+            <span class="text-xs ${col.status.text} opacity-70">${col.items.length}</span>
+          </div>
+          <div class="space-y-2 min-h-[100px]" data-drop></div>
+        `;
+        const dropZone = colEl.querySelector('[data-drop]');
+        for (const item of col.items) dropZone.appendChild(buildCard(item));
+
+        colEl.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          colEl.classList.add('ring-2', col.status.ring);
+        });
+        colEl.addEventListener('dragleave', () => colEl.classList.remove('ring-2', col.status.ring));
+        colEl.addEventListener('drop', async (e) => {
+          e.preventDefault();
+          colEl.classList.remove('ring-2', col.status.ring);
+          const path = e.dataTransfer.getData('text/plain');
+          const item = allItems.find((i) => i.path === path);
+          if (!item) return;
+          if ((item.frontmatter || {}).status === col.status.key) return;
+          await updateStatus(item, col.status.key);
+        });
+
+        boardEl.appendChild(colEl);
+      }
+    }
+
+    async function updateStatus(item, newStatus) {
+      try {
+        const r1 = await fetch(`/api/article?path=${encodeURIComponent(item.path)}`);
+        const d1 = await r1.json();
+        if (!r1.ok) throw new Error(d1.error || '加载失败');
+        const { frontmatter, body } = window.SakuapiFM.parseFrontmatter(d1.content);
+        const newFM = { ...frontmatter, status: newStatus };
+        const newContent = window.SakuapiFM.serializeFrontmatter(newFM, body);
+
+        const r2 = await fetch('/api/article', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: item.path, content: newContent, sha: d1.sha, message: `status: ${newStatus} ← board` }),
+        });
+        const d2 = await r2.json();
+        if (!r2.ok) throw new Error(d2.error || '保存失败');
+        item.frontmatter = newFM;
+        renderBoard();
+      } catch (err) {
+        alert('改状态失败: ' + err.message);
+      }
+    }
+
+    (async function load() {
+      try {
+        const r = await fetch('/api/list?frontmatter=1');
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+        allItems = (data.items || []).filter((i) => i.group === GROUP_KEY);
+        document.getElementById('loading').classList.add('hidden');
+        boardEl.classList.remove('hidden');
+        renderBoard();
+      } catch (err) {
+        document.getElementById('loading').innerHTML = `<div class="text-red-600">加载失败: ${err.message}</div>`;
+      }
+    })();
+  </script>
+</LayoutG>

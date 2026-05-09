@@ -16,6 +16,7 @@ set -e
 # （不要再嵌套一层组名）。
 SKILL_GROUPS=(
   "restaurant:$HOME/.claude/skills/japan-cn-restaurant-media/drafts/restaurant"
+  "immigration:$HOME/.claude/skills/japan-immigration-content/drafts/immigration"
 )
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

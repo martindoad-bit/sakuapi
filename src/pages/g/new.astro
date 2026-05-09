@@ -1,0 +1,211 @@
+---
+import LayoutG from '../../layouts/LayoutG.astro';
+import WorkflowFields from '../../components/WorkflowFields.astro';
+
+const GROUP_KEY = 'gyosei';
+const groupKeyJson = JSON.stringify(GROUP_KEY);
+---
+
+<LayoutG title="新建文章 · Sakuapi">
+  <link rel="stylesheet" href="https://unpkg.com/easymde@2.18.0/dist/easymde.min.css" />
+
+  <div class="max-w-3xl mx-auto px-6 py-8">
+    <h1 class="text-2xl font-bold tracking-tight mb-1">新建文章</h1>
+    <p class="text-sm text-neutral-500 mb-6">填标题和正文就能保存。其他字段都可以留空，以后再补。</p>
+
+    <div id="form-error" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm"></div>
+    <div id="form-success" class="hidden mb-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-700 text-sm"></div>
+
+    <form id="article-form" class="bg-white border border-neutral-200 rounded-lg p-6 space-y-5">
+      <label class="block">
+        <span class="block text-sm font-medium text-neutral-700 mb-1">标题 <span class="text-red-500">*</span></span>
+        <input
+          id="f-title"
+          type="text"
+          required
+          class="w-full text-lg border border-neutral-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+          placeholder="文章标题"
+        />
+      </label>
+
+      <div>
+        <span class="block text-sm font-medium text-neutral-700 mb-1">正文 <span class="text-red-500">*</span></span>
+        <textarea id="f-content" required></textarea>
+      </div>
+
+      <details class="bg-neutral-50 border border-neutral-200 rounded-md">
+        <summary class="cursor-pointer px-4 py-3 text-sm text-neutral-600 hover:text-neutral-800 select-none">
+          ⚙️ 高级（自定义日期 / 文件名 / 协作信息）
+        </summary>
+        <div class="px-4 pb-4 pt-1 space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="block text-xs font-medium text-neutral-600 mb-1">批次日期</span>
+              <input id="f-date" type="date" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm" required />
+            </label>
+            <label class="block">
+              <span class="block text-xs font-medium text-neutral-600 mb-1">文件名（自动生成，可改）</span>
+              <input id="f-filename" type="text" class="w-full border border-neutral-300 rounded-md px-3 py-2 text-sm font-mono" />
+            </label>
+          </div>
+          <WorkflowFields />
+        </div>
+      </details>
+
+      <div class="flex items-center justify-end gap-3 pt-2 border-t border-neutral-100">
+        <a href="/g/" class="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-800 transition">取消</a>
+        <button id="submit-btn" type="submit" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-md font-medium shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+          保存文章
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <input id="image-upload-input" type="file" accept="image/*" class="hidden" />
+
+  <script src="https://unpkg.com/marked@13.0.3/marked.min.js" is:inline></script>
+  <script src="https://unpkg.com/easymde@2.18.0/dist/easymde.min.js" is:inline></script>
+  <script src="/scripts/frontmatter.js" is:inline></script>
+
+  <script is:inline define:vars={{ groupKeyJson }}>
+    const GROUP_KEY = JSON.parse(groupKeyJson);
+
+    const titleInp = document.getElementById('f-title');
+    const dateInp = document.getElementById('f-date');
+    const fnInp = document.getElementById('f-filename');
+
+    const today = new Date();
+    dateInp.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    function slugify(s) {
+      return s.trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^一-鿿A-Za-z0-9\-_]/g, '')
+        .slice(0, 30) || '未命名';
+    }
+    function autoFilename() {
+      const num = String(Date.now()).slice(-4);
+      return `${num}-${slugify(titleInp.value || '未命名')}`;
+    }
+    titleInp.addEventListener('input', () => {
+      if (!fnInp.dataset.touched) fnInp.value = autoFilename();
+    });
+    fnInp.addEventListener('input', () => { fnInp.dataset.touched = '1'; });
+    fnInp.value = autoFilename();
+
+    const url = new URL(window.location.href);
+    const isClone = url.searchParams.get('clone') === '1';
+    let initialContent = '';
+    let initialFM = {};
+    if (isClone) {
+      try {
+        initialContent = sessionStorage.getItem('sakuapi-g-clone-content') || '';
+        const fmJson = sessionStorage.getItem('sakuapi-g-clone-frontmatter');
+        if (fmJson) initialFM = JSON.parse(fmJson);
+        sessionStorage.removeItem('sakuapi-g-clone-content');
+        sessionStorage.removeItem('sakuapi-g-clone-frontmatter');
+      } catch {}
+    }
+
+    const easymde = new EasyMDE({
+      element: document.getElementById('f-content'),
+      spellChecker: false,
+      autosave: { enabled: true, uniqueId: `sakuapi-g-draft-new`, delay: 1500 },
+      status: ['lines', 'words'],
+      minHeight: '400px',
+      placeholder: '在这里写正文。支持 Markdown，也可以直接复制粘贴。',
+      previewRender: (text) => (window.marked ? window.marked.parse(text) : text),
+      toolbar: [
+        'bold', 'italic', 'heading', '|',
+        'quote', 'unordered-list', 'ordered-list', '|',
+        'link', {
+          name: 'image-upload',
+          action: () => triggerImageUpload(),
+          className: 'fa fa-upload',
+          title: '上传图片',
+        }, 'table', '|',
+        'preview', 'side-by-side', 'fullscreen', '|',
+        'guide',
+      ],
+    });
+    if (initialContent) easymde.value(initialContent);
+    if (Object.keys(initialFM).length) {
+      window.SakuapiWF.write(initialFM);
+      if (initialFM.title) titleInp.value = initialFM.title;
+    }
+
+    const fileInp = document.getElementById('image-upload-input');
+    function triggerImageUpload() { fileInp.value = ''; fileInp.click(); }
+    fileInp.addEventListener('change', async () => {
+      const f = fileInp.files && fileInp.files[0];
+      if (!f) return;
+      const placeholder = `![上传中…${f.name}]()`;
+      const cm = easymde.codemirror;
+      cm.replaceRange(placeholder, cm.getCursor());
+      try {
+        const fd = new FormData();
+        fd.append('file', f);
+        fd.append('group', GROUP_KEY);
+        const r = await fetch('/api/upload', { method: 'POST', body: fd });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || '上传失败');
+        const md = `![${f.name}](${data.url})`;
+        easymde.value(easymde.value().replace(placeholder, md));
+      } catch (err) {
+        easymde.value(easymde.value().replace(placeholder, ''));
+        alert('图片上传失败: ' + err.message);
+      }
+    });
+
+    const form = document.getElementById('article-form');
+    const errBox = document.getElementById('form-error');
+    const okBox = document.getElementById('form-success');
+    const submitBtn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errBox.classList.add('hidden');
+      okBox.classList.add('hidden');
+
+      const title = titleInp.value.trim();
+      const date = dateInp.value;
+      let filename = (fnInp.value.trim() || autoFilename()).replace(/\.md$/, '').replace(/^\/+|\/+$/g, '');
+      if (!title) { errBox.textContent = '请填标题'; errBox.classList.remove('hidden'); return; }
+      if (!date) { errBox.textContent = '请填日期'; errBox.classList.remove('hidden'); return; }
+      if (filename.includes('/') || filename.includes('..')) {
+        errBox.textContent = '文件名不能包含 / 或 ..';
+        errBox.classList.remove('hidden');
+        return;
+      }
+      const body = easymde.value();
+      if (!body.trim()) { errBox.textContent = '请写正文'; errBox.classList.remove('hidden'); return; }
+
+      const fm = window.SakuapiWF.read();
+      fm.title = title;
+      fm.date = date;
+      const content = window.SakuapiFM.serializeFrontmatter(fm, body);
+      const path = `src/content/articles/${GROUP_KEY}/${date}/${filename}.md`;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '保存中…';
+      try {
+        const r = await fetch('/api/article', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path, content, message: `add: ${title}` }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || '保存失败');
+        try { easymde.clearAutosavedValue(); } catch {}
+        okBox.innerHTML = `已保存！commit <a class="underline" target="_blank" href="${data.commitUrl}">${(data.commitSha || '').slice(0, 7)}</a> · 跳转中…`;
+        okBox.classList.remove('hidden');
+        setTimeout(() => { window.location.href = '/g/'; }, 1200);
+      } catch (err) {
+        errBox.textContent = '保存失败: ' + err.message;
+        errBox.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '保存文章';
+      }
+    });
+  </script>
+</LayoutG>
