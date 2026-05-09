@@ -1,10 +1,38 @@
 ---
 title: "保健所突然进店，问你要『衛生管理計画書』——拿不出来，直接命令停业"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 法规
   - 卫生
+sources_claimed:
+  - url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000197196.html"
+    tier: 1
+    date: "2026-04"
+    note: "食品衛生法改正（HACCP 制度化）厚労省说明"
+  - url: "https://laws.e-gov.go.jp/law/322AC0000000233/"
+    tier: 1
+    date: "2026-04"
+    note: "食品衛生法 50 条の 2 + 60 条 e-Gov 原文"
+  - url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000179028_00003.html"
+    tier: 1
+    date: "2026-04"
+    note: "小規模事業者向け HACCP 手引書 厚労省"
+  - url: "https://www.n-shokuei.jp/eisei/pdf/haccp_tebikisyo.pdf"
+    tier: 1
+    date: "2026-04"
+    note: "小規模一般飲食店向け手引書 PDF（令和 6 年改訂）"
+  - url: "https://www.hokeniryo1.metro.tokyo.lg.jp/shokuhin/kaisei/haccp.html"
+    tier: 1
+    date: "2026-04"
+    note: "東京都保健医療局 HACCP 制度化页"
+notes: |
+  FACT-OK ✅ | 审计 2026-05-09
+  食品衛生法第50条の2 ✅ ｜ 2021年6月1日完全義務化 ✅ ｜ 第60条（改善命令）✅
+  小規模事業者B档手引書・3件文書要件（計画書/実施記録/振り返り）✅（2024年1月改訂版準拠）
+  法条・数字・年月すべて確認済み。問題なし。
 ---
 
 # 保健所突然进店，问你要『衛生管理計画書』——拿不出来，直接命令停业

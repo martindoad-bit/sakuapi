@@ -1,10 +1,42 @@
 ---
 title: "保健所柜台前递上申请书，对方一句话把你打回去——你忘了先去考一张证"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 开业
   - 资格
+sources_claimed:
+  - url: "https://laws.e-gov.go.jp/law/322AC0000000233/"
+    tier: 1
+    date: "2026-04"
+    note: "食品衛生法 51 条 e-Gov"
+  - url: "https://www.toshoku.or.jp/training/"
+    tier: 2
+    date: "2026-04"
+    note: "東京都食品衛生協会 講習会案内 + 受講料"
+  - url: "https://www.toshoku.or.jp/training/seki-qanda.html"
+    tier: 2
+    date: "2026-04"
+    note: "責任者講習会 Q&A（外国人受講要件）"
+  - url: "https://www.fha-kanagawa.jp/"
+    tier: 2
+    date: "2026-04"
+    note: "神奈川県食品衛生協会 講習料"
+  - url: "https://www.hokeniryo1.metro.tokyo.lg.jp/shokuhin/law/sekininsya.html"
+    tier: 1
+    date: "2026-04"
+    note: "東京都保健医療局 責任者制度"
+  - url: "https://www.pref.saitama.lg.jp/"
+    tier: 1
+    date: "2026-04"
+    note: "埼玉県 変更届 10 日以内规定"
+notes: |
+  FACT-OK ✅（P1あり）| 审计 2026-05-09
+  食品衛生法第51条 ✅（2018年改正後も条番号変更なし・確認済み）
+  受講料9,000–12,100円範囲 ✅
+  P1：変更届「10日以内」の出典が埼玉県のみ（sources_claimed）。本文では全国一律として記述しているが、都道府県によって期間が異なる（東京都は日数を明記しない「速やかに」等の表現）。「所在都道府県保健所へ要確認」の注記を追加推奨。
 ---
 
 四月中旬，江东区保健所的食品卫生窗口。一位华人老板把刚装修好的店面平面图、营业许可申请书、给排水图、内装写真，整整一摞铺到台面上。窗口的女职员看了一眼，抽出一张 A4 纸推回来：

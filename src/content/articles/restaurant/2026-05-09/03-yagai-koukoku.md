@@ -1,10 +1,42 @@
 ---
 title: "新店开业第二周，区役所的人来量了你招牌的尺寸"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 法规
   - 招牌
+sources_claimed:
+  - url: "https://laws.e-gov.go.jp/law/324AC0000000189"
+    tier: 1
+    date: "2026-04"
+    note: "屋外広告物法 e-Gov 原文（含 34 条罚则）"
+  - url: "https://www.reiki.metro.tokyo.lg.jp/reiki/reiki_honbun/g101RG00001183.html"
+    tier: 1
+    date: "2026-04"
+    note: "東京都屋外広告物条例"
+  - url: "https://www.mlit.go.jp/toshi/townscape/toshi_townscape_tk_000023.html"
+    tier: 1
+    date: "2026-04"
+    note: "国土交通省 屋外広告物制度概要"
+  - url: "https://www.toshiseibi.metro.tokyo.lg.jp/"
+    tier: 1
+    date: "2026-04"
+    note: "東京都都市整備局 屋外広告物のしおり"
+  - url: "https://www.city.kyoto.lg.jp/tokei/cmsfiles/contents/0000056/56450/gaidorain2(280929syusei).pdf"
+    tier: 1
+    date: "2026-04"
+    note: "京都市デザインガイド 彩度限制"
+  - url: "https://www.pref.osaka.lg.jp/houbun/reiki/reiki_honbun/k201RG00000820.html"
+    tier: 1
+    date: "2026-04"
+    note: "大阪府屋外広告物条例"
+notes: |
+  FACT-FAIL ❌（P1）| 审计 2026-05-09
+  P1：東京都条例の罰則条番号・金額に誤りあり。本文「不服従改善/除却命令 → 東京都条例第67条系・50万円以下」→ 実際は67条は罰則規定ではなく、50万円という金額も東京都条例には存在しない。未経許可設置・改善命令不服従ともに68条・30万円以下が正確（両違反とも同条・同上限）。要修正。
+  屋外広告物法第34条（都道府県への授権）はURL記載あり・条文全文取得不可のため条番号未確認（要確認・P1扱い）。
+  自家用広告物7m²免申請上限（東京）✅ ｜ 壁面3/10 ✅ ｜ 突出1.5m ✅ ｜ 京都市彩度規制（マンセル値）✅
 ---
 
 新店开业第二周，下午三点，门口来了两个穿夹克衫挂工作证的人。一个拿着卷尺，一个拿着相机，从店门口的红色大字招牌开始量，量壁面，量突出去那块灯箱的伸出长度，量灯笼挂的高度。

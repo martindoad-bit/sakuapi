@@ -1,10 +1,34 @@
 ---
 title: "日本商业租金能谈——多数华人老板根本不知道，白白多付了几年"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 经营
   - 谈判
+sources_claimed:
+  - url: "https://laws.e-gov.go.jp/law/066AC0000000090"
+    tier: 1
+    date: "2026-04"
+    note: "借地借家法 32 条 賃料増減請求権 e-Gov"
+  - url: "https://www.mlit.go.jp/totikensangyo/const/1_6_bf_000013.html"
+    tier: 1
+    date: "2026-04"
+    note: "宅建業法 46 条 仲介手数料上限 国土交通省"
+  - url: "https://suumo.jp/article/oyakudachi/oyaku/chintai/fr_money/freerent/"
+    tier: 3
+    date: "2026-04"
+    note: "SUUMO フリーレント相场说明"
+  - url: "https://www.temposmart.jp/articles/column/tenanto-koushinryou/"
+    tier: 4
+    date: "2026-04"
+    note: "テンポスマート 店舗保證金更新料相場"
+notes: |
+  FACT-OK ✅（P2あり）| 审计 2026-05-09
+  借地借家法第32条（賃料減額請求権）✅ ｜ 宅建業法第46条（仲介手数料上限）✅
+  仲介手数料借主原則0.5ヶ月・承諾で1ヶ月可 ✅（46条解釈正確）
+  P2：フリーレント1-3ヶ月相場・更新料1ヶ月相場・閑散期5-9月谈判効果の各記述は業界慣行情報であり特定一次情報源なし（Tier4相当）。「相場」として文脈上適切に使用されており誤りではないが、数字が独り歩きするリスクあり。GMが判断。
 ---
 
 # 日本商业租金能谈——多数华人老板根本不知道，白白多付了几年

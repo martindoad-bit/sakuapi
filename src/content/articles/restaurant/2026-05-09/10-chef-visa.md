@@ -1,10 +1,36 @@
 ---
 title: "面试三个月终于找到合心意的师傅，签证被拒——「技能」在留资格的经验年数证明，是中餐老板招人最大的坑"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 用工
   - 签证
+sources_claimed:
+  - url: "https://laws.e-gov.go.jp/law/326CO0000000319"
+    tier: 1
+    date: "2026-04"
+    note: "入管法別表第一の二「技能」在留資格"
+  - url: "https://www.moj.go.jp/isa/"
+    tier: 1
+    date: "2026-04"
+    note: "出入国在留管理庁 技能告示"
+  - url: "https://www.otaff1.jp/"
+    tier: 1
+    date: "2026-04"
+    note: "一般社団法人 OTAFF 特定技能外食業 試験"
+  - url: "https://www.mofa.go.jp/mofaj/toko/page25_001263.html"
+    tier: 1
+    date: "2026-04"
+    note: "外務省 中国 2023/11 海牙公約加入"
+notes: |
+  FACT-OK ✅ | 审计 2026-05-09
+  技能在留資格・外国料理調理師・10年実務経験要件 ✅
+  タイ料理5年特例 ✅（中国料理は特例なし・10年死線 ✅）
+  中国アポスティーユ2023年11月7日発効 ✅
+  特定技能1号外食業（N4+OTAFF試験）✅ ｜ 経営管理ビザ（資本金500万円以上・2名雇用）✅
+  法条・年月・制度内容すべて確認済み。問題なし。
 ---
 
 # 面试三个月终于找到合心意的师傅，签证被拒——「技能」在留资格的经验年数证明，是中餐老板招人最大的坑

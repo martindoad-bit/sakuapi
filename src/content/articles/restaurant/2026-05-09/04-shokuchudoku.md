@@ -1,10 +1,38 @@
 ---
 title: "客人吐了，老板想「赔点钱算了」，结果第二天保健所来了"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 法规
   - 危机
+sources_claimed:
+  - url: "https://laws.e-gov.go.jp/law/322AC0000000233/"
+    tier: 1
+    date: "2026-04"
+    note: "食品衛生法 8/63/60/81 条 e-Gov"
+  - url: "https://www.mhlw.go.jp/file/06-Seisakujouhou-11130500-Shokuhinanzenbu/0000139151.pdf"
+    tier: 1
+    date: "2026-04"
+    note: "厚労省 大量調理施設衛生管理マニュアル（検食 50g/-20℃/2 周）"
+  - url: "https://clinicalsup.jp/jpoc/contentpage.aspx?diseaseid=2049"
+    tier: 3
+    date: "2026-04"
+    note: "食中毒患者の届出義務（医師视角）"
+  - url: "https://pro.saraya.com/sanitation/column/kogure/"
+    tier: 4
+    date: "2026-04"
+    note: "保健所調査流程（サラヤ商业说明）"
+  - url: "https://nexillpartners.jp/law/kigyou/column/compliance/2789/"
+    tier: 4
+    date: "2026-04"
+    note: "弁護士解説 営業停止ケース"
+notes: |
+  FACT-FAIL ❌（P1）| 审计 2026-05-09
+  P1：法人1億円の条番号誤り。本文「食品衛生法81条…法人另罚最高1亿円」→ 個人罰則（3年以下/300万円以下）は第81条 ✅ 正確。しかし法人への1億円は第88条（両罰規定）が根拠であり、81条に法人罰則は含まれない。「81条（個人）・88条（両罰）」に分離修正推奨。
+  食品衛生法63条（医師24時間届出義務）✅ ｜ 60条（営業停止命令）✅ ｜ 刑法211条（業務上過失致傷5年以下/100万円）✅
+  検食50g/-20℃/2週間保存 ✅（大量調理施設マニュアル準拠・一般飲食店への推奨として正確に記述）
 ---
 
 周日中午，一家中餐厅。一个客人在卫生间里吐了三次，扶着墙走出来，说昨晚回家也腹泻一夜，怀疑是中午吃的小笼包。老板赶紧鞠躬、打折、塞了 5000 円现金、再三道歉，把人送走。心里盘算：这种事息事宁人最好，闹大了对店不好。

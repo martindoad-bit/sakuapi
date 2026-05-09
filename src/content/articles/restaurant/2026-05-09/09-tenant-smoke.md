@@ -1,10 +1,39 @@
 ---
 title: "开业一年的中餐厅，收到管理組合一封信，要求三个月内关店搬走"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 法规
   - 选址
+sources_claimed:
+  - url: "https://laws.e-gov.go.jp/law/337AC0000000069/"
+    tier: 1
+    date: "2026-04"
+    note: "区分所有法 6/31/57/58/59/60 条 e-Gov"
+  - url: "https://www.env.go.jp/air/akushu/low-gaiyo.html"
+    tier: 1
+    date: "2026-04"
+    note: "悪臭防止法 環境省"
+  - url: "https://www.mlit.go.jp/pri/kikanshi/pdf/2015/57-6.pdf"
+    tier: 1
+    date: "2026-04"
+    note: "国土交通政策研究所 共同利益背反行為分析"
+  - url: "https://inuki-ichiba.jp/resta/inshokuten-knowhow-kubunsyoyuhou/"
+    tier: 4
+    date: "2026-04"
+    note: "区分所有マンションで飲食店開業（RESTA）"
+  - url: "https://www.inshokuten.com/bukken/media/406"
+    tier: 3
+    date: "2026-04"
+    note: "飲食店ドットコム 重飲食不可説明"
+notes: |
+  FACT-OK ✅ | 审计 2026-05-09
+  区分所有法（昭和37年）第6条 ✅ ｜ 第31条（規約変更3/4・使用細則変更過半数）✅
+  第57条（行為停止請求）✅ ｜ 第58条（使用禁止請求）✅ ｜ 第59条（競売請求）✅ ｜ 第60条（占有者引渡請求）✅
+  悪臭防止法（昭和46年）✅
+  法条・年度・条番号すべて確認済み。問題なし。
 ---
 
 # 开业一年的中餐厅，收到管理組合一封信，要求三个月内关店搬走

@@ -1,10 +1,34 @@
 ---
 title: "招了 3 个月没人来，老板算了一笔账：买一台机器人比招一个人便宜"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 经营
   - 设备
+sources_claimed:
+  - url: "https://www.pudurobotics.com/jp/product/bellabot"
+    tier: 4
+    date: "2026-04"
+    note: "BellaBot 公式价格 309 万円"
+  - url: "https://www.pudurobotics.com/jp/product/kettybot"
+    tier: 4
+    date: "2026-04"
+    note: "KettyBot 月租 2.98 万起"
+  - url: "https://www.chusho.meti.go.jp/keiei/sapoin/2025/"
+    tier: 1
+    date: "2026-04"
+    note: "中小企業省力化投資補助金 2025"
+  - url: "https://www.mhlw.go.jp/stf/newpage_47498.html"
+    tier: 1
+    date: "2026-04"
+    note: "東京都最低賃金 2025/10 改定 1226 円"
+notes: |
+  FACT-OK ✅（P1あり）| 审计 2026-05-09
+  東京都最低賃金2025年10月3日1,163→1,226円（+5.4%）✅
+  BellaBot/KettyBot/SwiftBot価格帯 ✅（Pudu公式準拠）
+  P1：中小企業省力化投資補助金2025年度の補助上限額（5人以下200/300万、6-20人500/750万、21人以上1,000万円）は正式出典URL記載あり。ただし本補助金プログラムは年度ごとに内容変更の可能性があり、2026年度以降は条件が異なる場合あり。記事公開時点での最新年度情報との整合確認推奨。カタログ注文型対象機種 ✅
 ---
 
 新宿一家 60 席的中餐厅，去年 12 月开始挂招工牌，月薪写到了 25 万円。

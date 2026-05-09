@@ -1,10 +1,34 @@
 ---
 title: "早上去 ATM 取工钱，屏幕弹出『お取扱いできません』——银行账户被冻了"
-date: "2026-04-28"
-status: drafting
+date: "2026-05-09"
+status: editing
+assignee: "Claude (AI 写手)"
+platform: ["wechat"]
 tags:
   - 财务
   - 风险
+sources_claimed:
+  - url: "https://laws.e-gov.go.jp/law/319AC0000000022"
+    tier: 1
+    date: "2026-04"
+    note: "犯罪収益移転防止法 4/8 条 e-Gov"
+  - url: "https://www.fsa.go.jp/"
+    tier: 1
+    date: "2026-04"
+    note: "金融庁 マネロン対策ガイドライン"
+  - url: "https://www.npa.go.jp/sosikihanzai/jafic/"
+    tier: 1
+    date: "2026-04"
+    note: "警察庁 JAFIC 疑似取引参考事例"
+  - url: "https://www.zenginkyo.or.jp/"
+    tier: 2
+    date: "2026-04"
+    note: "全国銀行協会 KYC 実務指針"
+notes: |
+  FACT-FAIL ❌（P1）| 审计 2026-05-09
+  P1：frontmatter sources_claimedの犯収法URLが誤り。記載：「https://laws.e-gov.go.jp/law/319AC0000000022」→ 正：「https://laws.e-gov.go.jp/law/419AC0000000022」（平成19年法律=419；319は昭和19年に相当し存在しない）。本文内にURLは掲載されていないが出典記録として要修正。
+  犯収法2008年施行 ✅ ｜ 第4条（取引時確認）✅ ｜ 第8条（疑わしい取引届出）✅
+  JAFIC（犯罪収益移転防止対策室・警察庁）✅ ｜ 金融庁マネロン対策 ✅
 ---
 
 # 早上去 ATM 取工钱，屏幕弹出『お取扱いできません』——银行账户被冻了
