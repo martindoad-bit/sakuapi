@@ -14,9 +14,9 @@ const groupsJson = JSON.stringify(GROUPS);
       <p class="text-neutral-600">点小组进入文章列表 · 点 <a href="/new" class="text-orange-700 hover:underline">+ 新建</a> 写新稿 · 看 <a href="/board" class="text-orange-700 hover:underline">📋 看板</a> 跟进进度</p>
     </div>
 
-    <!-- 4 组卡片 -->
+    <!-- 4 组卡片（hidden 组不在此显示） -->
     <div class="grid sm:grid-cols-2 gap-4 mb-12">
-      {GROUPS.map((g) => {
+      {GROUPS.filter(g => !g.hidden).map((g) => {
         const c = colorClasses(g.color);
         return (
           <a href={`/${g.key}/`} class={`block group p-6 bg-white border border-neutral-200 rounded-lg ${c.border} hover:shadow-sm transition`}>

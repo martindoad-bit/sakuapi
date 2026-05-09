@@ -6,6 +6,7 @@ export interface Group {
   name: string;       // 显示名
   description: string;
   color: string;      // tailwind color 名
+  hidden?: boolean;   // 不在主页卡片和顶部导航显示
 }
 
 export const GROUPS: Group[] = [
@@ -32,6 +33,13 @@ export const GROUPS: Group[] = [
     name: '备选 1',
     description: '待启用',
     color: 'neutral',
+  },
+  {
+    key: 'gyosei',
+    name: '行政书士文案',
+    description: '行政书士業務コンテンツ',
+    color: 'teal',
+    hidden: true,
   },
 ];
 
@@ -65,6 +73,12 @@ export function colorClasses(color: string) {
       text: 'group-hover:text-neutral-700 text-neutral-700',
       hover: 'hover:text-neutral-700',
       bg: 'bg-neutral-50',
+    },
+    teal: {
+      border: 'hover:border-teal-400',
+      text: 'group-hover:text-teal-700 text-teal-700',
+      hover: 'hover:text-teal-700',
+      bg: 'bg-teal-50',
     },
   };
   return map[color] || map.neutral;
