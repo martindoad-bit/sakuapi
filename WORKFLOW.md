@@ -90,10 +90,17 @@ notes: ""
 
 ## 审稿员看这里
 
-**审稿的是草稿目录里的文件，不是已部署的网站内容。**
+**⚠️ 重要：审稿的是本地草稿目录，不是网站内容，不是 src/content/articles/。**
+
+草稿目录（按组）：
+
+| 组 | 审稿目录（就是这里，不是别的地方） |
+|----|----------------------------------|
+| 餐饮组 | `~/.claude/skills/japan-cn-restaurant-media/drafts/restaurant/` |
+| 移民组 | `~/.claude/skills/japan-immigration-content/drafts/immigration/` |
 
 每次审稿流程：
-1. 读草稿目录下 `status: review` 的文章
+1. 读上面草稿目录下 `status: review` 的文章（没有 status 字段的也算待审）
 2. 对照 `~/.claude/skills/japan-immigration-content/checks.md`（F1-F9）逐条核查
 3. 在 notes 字段写入结论（格式见上文）
 4. status 改为 `editing`（无论通过与否）
