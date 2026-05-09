@@ -83,11 +83,22 @@ notes: ""
 
 ## 部署触发条件
 
-工程窗口收到以下任意一条即可部署，无需等待创始人确认：
+工程窗口收到创始人通知「[组] [日期] batch 可以部署」后执行：
 
-- 「P0 已修改，可以部署」
-- 「通过，可以部署」
-- 「P1/P2 标注保留，可以部署」
+```bash
+./scripts/deploy.sh
+```
+
+**deploy.sh 会自动：**
+1. 同步草稿目录 → repo
+2. **检查所有文章 status**：有 `drafting` 或 `review` 状态 → 自动阻断，不允许部署
+3. 构建静态页面
+4. `git push` 到 GitHub（/api/list 数据源）
+5. wrangler 上传到 Cloudflare Pages
+
+**status 必须是 `editing` 或以上才能部署。** 审稿员改 status 就是放行信号。
+
+紧急情况跳过检查：`SKIP_REVIEW_CHECK=1 ./scripts/deploy.sh`
 
 ---
 
