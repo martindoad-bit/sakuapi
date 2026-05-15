@@ -67,6 +67,21 @@ for entry in "${SKILL_GROUPS[@]}"; do
   echo "📂 同步 [$group]: $source/ → $target/"
   mkdir -p "$target"
   rsync -av --delete --exclude='.DS_Store' "$source/" "$target/"
+
+  # ── 保护已发布文章：恢复 git HEAD 中 status≥scheduled 的文件 ──
+  PROTECTED_STATUSES="scheduled|published|archived"
+  while IFS= read -r -d '' dest_file; do
+    rel_path="${dest_file#$ROOT/}"
+    git_content=$(git -C "$ROOT" show "HEAD:$rel_path" 2>/dev/null || true)
+    if [ -z "$git_content" ]; then continue; fi
+    git_status=$(echo "$git_content" | grep -m1 "^status:" | awk '{print $2}' | tr -d '"' || true)
+    if echo "$git_status" | grep -qE "^($PROTECTED_STATUSES)$"; then
+      echo "$git_content" > "$dest_file"
+      echo "🔒 保护已发布文章（跳过 skill 覆盖）: $rel_path"
+    fi
+  done < <(find "$target" -name "*.md" -print0)
+  # ────────────────────────────────────────────────────────────────
+
   synced_any=true
 done
 
