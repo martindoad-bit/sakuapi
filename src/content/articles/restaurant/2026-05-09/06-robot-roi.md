@@ -1,34 +1,20 @@
 ---
-title: "招了 3 个月没人来，老板算了一笔账：买一台机器人比招一个人便宜"
+title: 招了 3 个月没人来，老板算了一笔账：买一台机器人比招一个人便宜
 date: "2026-05-09"
 status: editing
-assignee: "Claude (AI 写手)"
-platform: ["wechat"]
+assignee: Claude (AI 写手)
+platform:
+  - wechat
 tags:
   - 经营
   - 设备
-sources_claimed:
-  - url: "https://www.pudurobotics.com/jp/product/bellabot"
-    tier: 4
-    date: "2026-04"
-    note: "BellaBot 公式价格 309 万円"
-  - url: "https://www.pudurobotics.com/jp/product/kettybot"
-    tier: 4
-    date: "2026-04"
-    note: "KettyBot 月租 2.98 万起"
-  - url: "https://www.chusho.meti.go.jp/keiei/sapoin/2025/"
-    tier: 1
-    date: "2026-04"
-    note: "中小企業省力化投資補助金 2025"
-  - url: "https://www.mhlw.go.jp/stf/newpage_47498.html"
-    tier: 1
-    date: "2026-04"
-    note: "東京都最低賃金 2025/10 改定 1226 円"
 notes: |
   FACT-OK ✅（P1あり）| 审计 2026-05-09
   東京都最低賃金2025年10月3日1,163→1,226円（+5.4%）✅
   BellaBot/KettyBot/SwiftBot価格帯 ✅（Pudu公式準拠）
   P1：中小企業省力化投資補助金2025年度の補助上限額（5人以下200/300万、6-20人500/750万、21人以上1,000万円）は正式出典URL記載あり。ただし本補助金プログラムは年度ごとに内容変更の可能性があり、2026年度以降は条件が異なる場合あり。記事公開時点での最新年度情報との整合確認推奨。カタログ注文型対象機種 ✅
+sources_claimed:
+  - "url: \"https://www.pudurobotics.com/jp/product/bellabot"
 ---
 
 新宿一家 60 席的中餐厅，去年 12 月开始挂招工牌，月薪写到了 25 万円。
@@ -39,13 +25,12 @@ notes: |
 
 ## 主流型号和真实价格
 
-日本飲食店在用的配膳机器人，绝大多数是中国 Pudu Robotics（普渡科技）一家做的，三款主力：
+日本飲食店在用的配膳机器人，绝大多数是中国 Pudu Robotics（普渡科技）一家做的，两款主力：
 
 **BellaBot**（猫脸那款，最常见）：4 层托盘、载重 40 公斤、最大单层 41×50cm，能放下 4–6 个中餐圆盘。购入价 309 万円（税抜，部分代理 330 万円）。月租通常 5.6 万–12 万円，5 年合约最低见过 5.8 万円特价（限新客户、3 年期）。维护费另算，1 台 1 年约 15 万円。
 
 **KettyBot / KettyBot Pro**：体型窄、最小通过宽度 52cm，适合走道挤的小店。带前面板可显示菜品图片、迎宾。月租从 2.98 万円起（4 年合约，软银那个版本含本体和维护，搬运费另算）。Pro 版有鱼眼摄像头和悬挂减震，更稳但官方不公开单价，实务比 KettyBot 高一档。
 
-**SwiftBot**：3 层、载重 35 公斤、可选自动开闭门（卫生考虑），适合传菜距离长的店。
 
 二手市场也开始有了。BellaBot 二手大约 100–150 万円，但保修和维护要单独谈，遇到主板故障一次维修就 30 万起跳，不建议小店碰。
 
