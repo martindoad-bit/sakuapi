@@ -1,31 +1,18 @@
 ---
-title: "日本客人犹豫进你的火锅店，不是怕不好吃，是这四件事没人替他答"
+title: 日本客人犹豫进你的火锅店，不是怕不好吃，是这四件事没人替他答
 date: "2026-06-17"
-status: editing
-assignee: "Claude (AI 写手·获客支柱)"
-platform: ["wechat","xiaohongshu"]
+status: shooting
+assignee: Claude (AI 写手·获客支柱)
+platform:
+  - xiaohongshu
+  - wechat
+tags:
+  - 火锅
+  - 业态打法
+  - 平台获客
 pillar: "platform-acquisition"
-tags: ["火锅","业态打法","平台获客"]
 sources_claimed:
-  - url: "https://support.google.com/business/answer/14189260?hl=en"
-    sid: "S2"
-    note: "Google 官方说明餐厅 Business Profile 该补全的字段：菜单、属性、照片、营业信息，是「价格/座位/通风」该往哪里填的依据"
-  - url: "https://support.google.com/business/answer/7091?hl=en"
-    sid: "S1"
-    note: "Google 官方本地排名三要素 relevance/distance/prominence，信息越完整越被判定相关，支撑「补全字段影响展示」"
-  - url: "https://support.google.com/business/answer/7342169?hl=en"
-    sid: "S3"
-    note: "Google 官方贴文（Posts）功能说明，支撑用周四五贴文发当周空席/锅底的做法"
-  - url: "https://tabelog.com/help/score/"
-    sid: "S6"
-    note: "食べログ官方点数/排名说明：点数只由真实评价和用户影响度决定、付费/信息完整度都不影响点数 [S6]。课程信息是否完整属于转化层面、与点数无关，本文据此区分两者"
-  - url: "https://pro.gnavi.co.jp/"
-    sid: "S13"
-    note: "ぐるなびPRO 官方，面向店铺解决课题/承接宴会与网络预约的工具，支撑用ぐるなび分课程接多人预约"
-  - url: "https://about.instagram.com/blog/announcements/break-down-how-instagram-search-works"
-    sid: "S17"
-    note: "Instagram 官方拆解搜索机制，关键词/标题/标签影响被搜到，支撑「30秒点单指南」类内容的可发现性"
-notes: ""
+  - "url: \"https://support.google.com/business/answer/14189260?hl=en"
 ---
 
 # 日本客人犹豫进你的火锅店，不是怕不好吃，是这四件事没人替他答
