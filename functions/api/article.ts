@@ -90,7 +90,12 @@ export const onRequestDelete: PagesFunction<Env> = async ({ request, env }) => {
 
   let sha = url.searchParams.get('sha') || '';
   if (!sha) {
-    const existing = await getFile(env, path);
+    let existing = await getFile(env, path);
+    if (!existing) {
+      // GitHub Contents API 写后读有秒级延迟；等一下重试一次再判定不存在
+      await new Promise((r) => setTimeout(r, 1500));
+      existing = await getFile(env, path);
+    }
     if (!existing) return json({ error: 'not found' }, 404);
     sha = existing.sha;
   }

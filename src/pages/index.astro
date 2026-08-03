@@ -11,10 +11,10 @@ const groupsJson = JSON.stringify(GROUPS);
   <div class="max-w-5xl mx-auto px-6 py-10">
     <div class="mb-10">
       <h1 class="text-3xl font-bold tracking-tight mb-2">内容工作站</h1>
-      <p class="text-neutral-600">点小组进入文章列表 · 点 <a href="/new" class="text-orange-700 hover:underline">+ 新建</a> 写新稿 · 看 <a href="/board" class="text-orange-700 hover:underline">📋 看板</a> 跟进进度</p>
+      <p class="text-neutral-600">点小组进入文章列表 · 点 <a href="/new" class="text-orange-700 hover:underline">+ 新建</a> 写新稿</p>
     </div>
 
-    <!-- 4 组卡片（hidden 组不在此显示） -->
+    <!-- 组卡片（hidden 组不显示） -->
     <div class="grid sm:grid-cols-2 gap-4 mb-12">
       {GROUPS.filter(g => !g.hidden).map((g) => {
         const c = colorClasses(g.color);
@@ -31,11 +31,11 @@ const groupsJson = JSON.stringify(GROUPS);
       })}
     </div>
 
-    <!-- 最近活动 -->
+    <!-- 最近批次 -->
     <section>
       <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        最近活动
-        <span class="text-xs text-neutral-400 font-normal">最近修改的 8 篇</span>
+        最近文章
+        <span class="text-xs text-neutral-400 font-normal">最新批次的 8 篇</span>
       </h2>
       <div id="recent-loading" class="text-sm text-neutral-400">加载中…</div>
       <div id="recent-list" class="hidden space-y-2"></div>
@@ -54,23 +54,15 @@ const groupsJson = JSON.stringify(GROUPS);
 
     (async function load() {
       let items = [];
-      let apiError = '';
+      const loadingEl = document.getElementById('recent-loading');
       try {
-        const r = await fetch('/api/list?frontmatter=1');
+        const r = await fetch('/articles.json', { cache: 'no-cache' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const d = await r.json();
-        if (r.ok) {
-          items = d.items || [];
-        } else {
-          apiError = d.error || `HTTP ${r.status}`;
-        }
+        items = d.items || [];
       } catch (e) {
-        apiError = e.message || '网络错误';
-      }
-      if (apiError) {
-        const loadingEl = document.getElementById('recent-loading');
-        loadingEl.innerHTML = `<div class="p-4 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800">
-          API 暂不可用：${apiError}<br><span class="text-xs text-amber-700">如果你刚登录请刷新一次。如果仍然报错请联系管理员。</span>
-        </div>`;
+        loadingEl.innerHTML = `<div class="p-4 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800">加载失败：${escapeHtml(e.message)}（刷新一次试试）</div>`;
+        return;
       }
 
       // 每组数量 + 状态分布
@@ -80,8 +72,7 @@ const groupsJson = JSON.stringify(GROUPS);
         const g = byGroup.get(it.group);
         if (!g) continue;
         g.total++;
-        const s = (it.frontmatter || {}).status;
-        if (s) g.statuses.set(s, (g.statuses.get(s) || 0) + 1);
+        if (it.status) g.statuses.set(it.status, (g.statuses.get(it.status) || 0) + 1);
       }
       for (const g of GROUPS) {
         const info = byGroup.get(g.key);
@@ -100,30 +91,27 @@ const groupsJson = JSON.stringify(GROUPS);
         }
       }
 
-      // 最近 8 篇
-      const recent = items
-        .filter((i) => i.path.endsWith('.md'))
+      // 最新批次的 8 篇（按批次日期倒序）
+      const recent = [...items]
+        .sort((a, b) => (b.batch + b.filename).localeCompare(a.batch + a.filename))
         .slice(0, 8);
       const recentEl = document.getElementById('recent-list');
-      const loadingEl = document.getElementById('recent-loading');
       if (recent.length === 0) {
         loadingEl.textContent = '还没有文章。点上面的卡片进入小组开始写第一篇。';
         return;
       }
       for (const it of recent) {
         const g = GROUP_BY_KEY[it.group];
-        const fm = it.frontmatter || {};
-        const slug = it.path.replace(/^src\/content\/articles\//, '').replace(/\.md$/, '');
-        const status = fm.status ? STATUS_BY_KEY[fm.status] : null;
+        const status = it.status ? STATUS_BY_KEY[it.status] : null;
         const row = document.createElement('div');
         row.className = 'flex items-center justify-between gap-3 p-3 bg-white border border-neutral-200 rounded-md hover:border-orange-300 transition group';
         row.innerHTML = `
           <div class="min-w-0 flex-1">
-            <a href="/${slug}/" class="block">
+            <a href="/${it.slug}/" class="block">
               <div class="text-sm font-medium text-neutral-800 group-hover:text-orange-700 transition truncate">${escapeHtml(it.title)}</div>
               <div class="text-xs text-neutral-500 mt-0.5">
                 ${escapeHtml(g?.name || it.group)} · ${escapeHtml(it.batch || '')}
-                ${fm.assignee ? ` · @${escapeHtml(fm.assignee)}` : ''}
+                ${it.assignee ? ` · @${escapeHtml(it.assignee)}` : ''}
               </div>
             </a>
           </div>

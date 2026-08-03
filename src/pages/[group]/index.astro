@@ -32,7 +32,7 @@ const platformsJson = JSON.stringify(PLATFORMS);
       </a>
     </div>
 
-    <!-- 状态筛选 -->
+    <!-- 筛选 + 排序 -->
     <div class="mb-5 flex flex-wrap items-center gap-2">
       <span class="text-xs text-neutral-500 mr-1">筛选：</span>
       <button data-filter="" class="filter-btn text-xs px-2.5 py-1 rounded-full border border-neutral-300 hover:border-orange-400 transition data-[active=true]:bg-orange-600 data-[active=true]:text-white data-[active=true]:border-orange-600" data-active="true">全部</button>
@@ -42,9 +42,46 @@ const platformsJson = JSON.stringify(PLATFORMS);
           class={`filter-btn text-xs px-2.5 py-1 rounded-full border transition ${s.bg} ${s.text} ${s.border} hover:opacity-80`}
         >{s.label}</button>
       ))}
+      <span class="flex-1"></span>
+      <label class="text-xs text-neutral-500 flex items-center gap-1.5">
+        排序：
+        <select id="sort-select" class="text-xs border border-neutral-300 rounded-md px-2 py-1 bg-white">
+          <option value="newest">最新批次在前</option>
+          <option value="oldest">最早批次在前</option>
+          <option value="title">按标题</option>
+        </select>
+      </label>
     </div>
 
     <div id="error-box" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm"></div>
+
+    {groupKey === 'immigration' && (
+      <section class="mb-6 rounded-xl border border-sky-200 bg-white p-5 shadow-sm">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div class="text-xs font-semibold uppercase tracking-wide text-sky-700 mb-2">内部手册</div>
+            <h2 class="text-xl font-bold text-neutral-900 mb-2">日本永住申请内部手册</h2>
+            <p class="text-sm leading-6 text-neutral-600 max-w-2xl">
+              永住路径判断、官方原件、材料图谱、风险主题、问诊剧本和 PDF 版手册。用于内部学习、初筛和案件协作，不替代行政书士或入管判断。
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0">
+            <a
+              href="/immigration/permanent-residency-handbook/"
+              class="inline-flex items-center rounded-md bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800"
+            >
+              打开手册网站
+            </a>
+            <a
+              href="/immigration/permanent-residency-handbook/permanent-residency-handbook.pdf"
+              class="inline-flex items-center rounded-md border border-sky-300 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-800 transition hover:bg-sky-100"
+            >
+              下载 PDF
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
 
     <!-- 加载骨架 -->
     <div id="skeleton" class="space-y-3">
@@ -76,62 +113,77 @@ const platformsJson = JSON.stringify(PLATFORMS);
     const listEl = document.getElementById('article-list');
     const emptyEl = document.getElementById('empty-state');
     const errBox = document.getElementById('error-box');
+    const sortSel = document.getElementById('sort-select');
 
     let articles = [];
     let activeFilter = '';
+    let sortMode = 'newest';
 
     function escapeHtml(s) {
       return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
 
     function buildCard(item) {
-      const fm = item.frontmatter || {};
-      const slug = item.path.replace(/^src\/content\/articles\//, '').replace(/\.md$/, '');
-      const status = fm.status ? STATUS_BY_KEY[fm.status] : null;
-      const platforms = (Array.isArray(fm.platform) ? fm.platform : (fm.platform ? [fm.platform] : []))
-        .map((k) => PLATFORM_BY_KEY[k]).filter(Boolean);
+      const status = item.status ? STATUS_BY_KEY[item.status] : null;
+      const platforms = (item.platform || []).map((k) => PLATFORM_BY_KEY[k]).filter(Boolean);
 
       const card = document.createElement('div');
       card.className = 'group bg-white border border-neutral-200 rounded-lg p-5 hover:border-orange-400 hover:shadow-sm transition';
-      card.dataset.status = fm.status || '';
+      card.dataset.status = item.status || '';
 
+      // slug 来自构建清单，和静态页面同一次构建产出，链接保证能打开
+      const articleUrl = `/${item.slug}/`;
       card.innerHTML = `
         <div class="flex items-start justify-between gap-4">
           <div class="min-w-0 flex-1">
-            <a href="/${slug}/" class="block group/title">
-              <h3 class="text-lg font-semibold text-neutral-900 group-hover/title:text-orange-700 transition mb-2 leading-snug">${escapeHtml(item.title || item.filename.replace(/\.md$/, ''))}</h3>
+            <a href="${articleUrl}" class="block group/title">
+              <h3 class="text-lg font-semibold text-neutral-900 group-hover/title:text-orange-700 transition mb-2 leading-snug">${escapeHtml(item.title || item.filename)}</h3>
             </a>
             <div class="flex items-center gap-1.5 flex-wrap mb-2">
               ${status ? `<span class="text-xs px-2 py-0.5 rounded ${status.bg} ${status.text} border ${status.border}">${status.label}</span>` : ''}
-              ${fm.assignee ? `<span class="text-xs px-2 py-0.5 rounded bg-neutral-100 text-neutral-700">@${escapeHtml(fm.assignee)}</span>` : ''}
+              ${item.assignee ? `<span class="text-xs px-2 py-0.5 rounded bg-neutral-100 text-neutral-700">@${escapeHtml(item.assignee)}</span>` : ''}
               ${platforms.map((p) => `<span class="text-xs px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700">${p.emoji} ${p.label}</span>`).join('')}
-              ${fm.shoot_date ? `<span class="text-xs px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">🎬 ${fm.shoot_date}</span>` : ''}
-              ${fm.publish_date ? `<span class="text-xs px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 border border-cyan-200">🚀 ${fm.publish_date}</span>` : ''}
-              ${fm.publish_url ? `<a href="${escapeHtml(fm.publish_url)}" target="_blank" rel="noopener" class="text-xs px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hover:underline">🔗 已发链接</a>` : ''}
+              ${item.publish_date ? `<span class="text-xs px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 border border-cyan-200">🚀 ${escapeHtml(item.publish_date)}</span>` : ''}
+              ${item.publish_url ? `<a href="${escapeHtml(item.publish_url)}" target="_blank" rel="noopener" class="text-xs px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hover:underline">🔗 已发链接</a>` : ''}
             </div>
             <div class="text-xs text-neutral-500">${escapeHtml(item.batch || '(无批次)')} · ${escapeHtml(item.filename)}</div>
           </div>
           <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition">
+            <button data-share class="px-2.5 py-1 text-xs text-neutral-600 bg-neutral-50 hover:bg-neutral-100 rounded transition">分享</button>
             <a href="/edit?path=${encodeURIComponent(item.path)}" class="px-2.5 py-1 text-xs text-orange-700 bg-orange-50 hover:bg-orange-100 rounded transition">编辑</a>
             <button data-del class="px-2.5 py-1 text-xs text-red-600 bg-red-50 hover:bg-red-100 rounded transition">删除</button>
           </div>
         </div>
       `;
 
-      const delBtn = card.querySelector('[data-del]');
-      delBtn.addEventListener('click', () => onDelete(item, delBtn));
+      card.querySelector('[data-del]').addEventListener('click', (e) => onDelete(item, e.currentTarget));
+      card.querySelector('[data-share]').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        const url = `${window.location.origin}${articleUrl}`;
+        try {
+          await navigator.clipboard.writeText(url);
+          btn.textContent = '已复制';
+        } catch {
+          prompt('复制这个链接分享给同事：', url);
+        }
+        setTimeout(() => { btn.textContent = '分享'; }, 1500);
+      });
       return card;
     }
 
     async function onDelete(item, btn) {
-      if (!confirm(`确认删除？\n\n${item.title || item.filename}\n\n会立即提交一个删除 commit（git 历史保留）。`)) return;
+      if (!confirm(`确认删除？\n\n${item.title || item.filename}\n\n删除后约 1-2 分钟从站点消失（git 历史保留，可找回）。`)) return;
       btn.disabled = true;
       btn.textContent = '删除中…';
       try {
         const r = await fetch(`/api/article?path=${encodeURIComponent(item.path)}`, { method: 'DELETE' });
-        const d = await r.json();
-        if (!r.ok) throw new Error(d.error || '删除失败');
-        await load();
+        let d = null;
+        try { d = await r.json(); } catch { /* 非 JSON（如登录过期跳转页） */ }
+        if (r.status === 401) throw new Error('登录已过期，请刷新页面重新登录');
+        if (!r.ok) throw new Error((d && d.error) || `删除失败（HTTP ${r.status}）`);
+        // 乐观更新：立刻从本地列表移除（静态页面等自动部署后消失）
+        articles = articles.filter((a) => a.path !== item.path);
+        render();
       } catch (err) {
         alert('删除失败: ' + err.message);
         btn.disabled = false;
@@ -139,17 +191,30 @@ const platformsJson = JSON.stringify(PLATFORMS);
       }
     }
 
+    function sortArticles(list) {
+      const arr = [...list];
+      if (sortMode === 'newest') {
+        arr.sort((a, b) => (b.batch + b.filename).localeCompare(a.batch + a.filename));
+      } else if (sortMode === 'oldest') {
+        arr.sort((a, b) => (a.batch + a.filename).localeCompare(b.batch + b.filename));
+      } else if (sortMode === 'title') {
+        arr.sort((a, b) => (a.title || a.filename).localeCompare(b.title || b.filename, 'zh'));
+      }
+      return arr;
+    }
+
     function render() {
       listEl.innerHTML = '';
-      const filtered = activeFilter
-        ? articles.filter((a) => (a.frontmatter || {}).status === activeFilter)
+      let filtered = activeFilter
+        ? articles.filter((a) => a.status === activeFilter)
         : articles;
+      filtered = sortArticles(filtered);
 
       if (filtered.length === 0) {
         listEl.classList.add('hidden');
         emptyEl.classList.remove('hidden');
         if (activeFilter) {
-          emptyEl.innerHTML = `<p class="mb-3">没有「${STATUS_BY_KEY[activeFilter]?.label || activeFilter}」状态的文章</p>`;
+          emptyEl.innerHTML = `<p class="mb-3">没有「${(STATUS_BY_KEY[activeFilter] || {}).label || activeFilter}」状态的文章</p>`;
         }
         return;
       }
@@ -165,13 +230,14 @@ const platformsJson = JSON.stringify(PLATFORMS);
       listEl.classList.add('hidden');
       emptyEl.classList.add('hidden');
       try {
-        const r = await fetch('/api/list?frontmatter=1');
+        // 静态清单：秒开、不限流。新保存的文章要等自动部署（约 1-2 分钟）后出现。
+        const r = await fetch('/articles.json', { cache: 'no-cache' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const d = await r.json();
-        if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
         articles = (d.items || []).filter((it) => it.group === groupKey);
       } catch (err) {
         skeleton.classList.add('hidden');
-        errBox.textContent = '加载失败：' + err.message;
+        errBox.textContent = '加载失败：' + err.message + '（刷新一次试试）';
         errBox.classList.remove('hidden');
         return;
       }
@@ -186,6 +252,7 @@ const platformsJson = JSON.stringify(PLATFORMS);
         render();
       });
     });
+    sortSel.addEventListener('change', () => { sortMode = sortSel.value; render(); });
 
     load();
   </script>

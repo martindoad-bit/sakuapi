@@ -40,6 +40,7 @@ export const PLATFORMS: Platform[] = [
   { key: 'douyin',      label: '抖音',     emoji: '🎵' },
   { key: 'wechat',      label: '公众号',   emoji: '📰' },
   { key: 'weishipin',   label: '视频号',   emoji: '🎬' },
+  { key: 'shipinhao',   label: '视频号',   emoji: '🎬' },
   { key: 'bilibili',    label: 'B 站',     emoji: '📺' },
   { key: 'youtube',     label: 'YouTube',  emoji: '▶️' },
   { key: 'twitter',     label: 'X / Twitter', emoji: '𝕏' },

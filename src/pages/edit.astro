@@ -4,7 +4,7 @@ import WorkflowFields from '../components/WorkflowFields.astro';
 ---
 
 <Layout title="编辑文章 · Sakuapi">
-  <link rel="stylesheet" href="https://unpkg.com/easymde@2.18.0/dist/easymde.min.css" />
+  <link rel="stylesheet" href="/vendor/easymde.min.css" />
 
   <div class="max-w-5xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between mb-6">
@@ -55,8 +55,8 @@ import WorkflowFields from '../components/WorkflowFields.astro';
 
   <input id="image-upload-input" type="file" accept="image/*" class="hidden" />
 
-  <script src="https://unpkg.com/marked@13.0.3/marked.min.js" is:inline></script>
-  <script src="https://unpkg.com/easymde@2.18.0/dist/easymde.min.js" is:inline></script>
+  <script src="/vendor/marked.min.js" is:inline></script>
+  <script src="/vendor/easymde.min.js" is:inline></script>
   <script src="/scripts/frontmatter.js" is:inline></script>
 
   <script is:inline>
@@ -191,11 +191,13 @@ import WorkflowFields from '../components/WorkflowFields.astro';
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ path, content, sha: currentSha, message: `update: ${path.replace(/^src\/content\/articles\//, '')} via admin` }),
         });
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error || '保存失败');
+        let data = null;
+        try { data = await r.json(); } catch { /* 非 JSON（如登录过期跳转页） */ }
+        if (r.status === 401) throw new Error('登录已过期，请刷新页面重新登录后再保存（正文已自动暂存，不会丢）');
+        if (!r.ok) throw new Error((data && data.error) || `HTTP ${r.status}`);
         currentSha = data.sha;
         try { easymde.clearAutosavedValue(); } catch {}
-        okBox.innerHTML = `已保存！commit <a class="underline" target="_blank" href="${data.commitUrl}">${(data.commitSha || '').slice(0, 7)}</a>`;
+        okBox.innerHTML = `✅ 已保存！改动约 1-2 分钟后自动生效到文章页面。commit <a class="underline" target="_blank" href="${data.commitUrl}">${(data.commitSha || '').slice(0, 7)}</a>`;
         okBox.classList.remove('hidden');
       } catch (err) {
         errBox.textContent = '保存失败: ' + err.message;

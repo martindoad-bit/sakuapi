@@ -18,7 +18,8 @@ const groupInfo = getGroup(article.group);
 const c = colorClasses(groupInfo?.color || 'neutral');
 const status = article.status ? getStatus(article.status) : null;
 const platforms = (article.platform || []).map((k) => PLATFORM_BY_KEY[k]).filter(Boolean);
-const editPath = `src/content/articles/${article.slug}.md`;
+// 用真实文件路径（保留大小写），不能用小写化的 slug 反推，否则文件名含大写时编辑页 404
+const editPath = article.repoPath;
 const { Content } = await render(article.entry);
 ---
 
@@ -29,12 +30,18 @@ const { Content } = await render(article.entry);
       <a href={`/${article.group}/`} class={`text-sm text-neutral-500 ${c.hover} transition`}>
         ← {groupInfo?.name || article.group}
       </a>
-      <a
-        href={`/edit?path=${encodeURIComponent(editPath)}`}
-        class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-sm font-medium shadow-sm transition"
-      >
-        ✏️ 编辑此文
-      </a>
+      <div class="flex items-center gap-2">
+        <button
+          id="share-btn"
+          class="inline-flex items-center gap-1.5 px-4 py-2 border border-neutral-300 hover:border-orange-400 text-neutral-700 rounded-md text-sm font-medium transition"
+        >🔗 分享</button>
+        <a
+          href={`/edit?path=${encodeURIComponent(editPath)}`}
+          class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-sm font-medium shadow-sm transition"
+        >
+          ✏️ 编辑此文
+        </a>
+      </div>
     </div>
 
     <div class="text-xs text-neutral-500 mb-2 uppercase tracking-wider">
@@ -87,4 +94,19 @@ const { Content } = await render(article.entry);
       </a>
     </div>
   </article>
+
+  <script is:inline>
+    const shareBtn = document.getElementById('share-btn');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          shareBtn.textContent = '✅ 链接已复制';
+        } catch {
+          prompt('复制这个链接分享给同事：', window.location.href);
+        }
+        setTimeout(() => { shareBtn.textContent = '🔗 分享'; }, 2000);
+      });
+    }
+  </script>
 </Layout>

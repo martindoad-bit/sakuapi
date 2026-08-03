@@ -5,6 +5,7 @@ export type Article = CollectionEntry<'articles'>;
 
 export interface ArticleMeta extends Workflow {
   slug: string;       // 完整路径，例如 restaurant/2026-04-27/01-foo
+  repoPath: string;   // GitHub 里的真实文件路径（编辑/删除用；slug 是小写化的，不可反推）
   group: string;      // 一级目录，例如 restaurant
   batch: string;      // 二级目录（通常是日期），例如 2026-04-27
   filename: string;   // 文件名（无扩展名）
@@ -48,8 +49,11 @@ export async function getAllArticles(): Promise<ArticleMeta[]> {
       const filename = parts[parts.length - 1] || slug;
       const filenameTitle = filename.replace(/^\d+-/, '');
       const data = entry.data as Workflow & { title?: string; date?: string };
+      // entry.filePath 是相对项目根的真实路径（保留原始大小写），供编辑/删除 API 使用
+      const repoPath = entry.filePath || `src/content/articles/${entry.id}`;
       return {
         slug,
+        repoPath,
         group,
         batch,
         filename,

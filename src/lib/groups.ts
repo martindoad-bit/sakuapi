@@ -15,6 +15,7 @@ export const GROUPS: Group[] = [
     name: '共享',
     description: '所有人都能看到的公共资料',
     color: 'slate',
+    hidden: true,
   },
   {
     key: 'restaurant',
@@ -33,6 +34,7 @@ export const GROUPS: Group[] = [
     name: '备选 1',
     description: '待启用',
     color: 'neutral',
+    hidden: true,
   },
   {
     key: 'gyosei',
