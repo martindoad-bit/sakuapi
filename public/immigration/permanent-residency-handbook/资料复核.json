@@ -1,0 +1,207 @@
+{
+  "generatedAt": "2026-06-18T05:14:10.400Z",
+  "checkedToday": "2026-06-18",
+  "sourcePath": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/高才人文转永住培训手册_v1.0.md",
+  "headings": 142,
+  "chapters": 11,
+  "images": {
+    "total": 24,
+    "mapped": 24,
+    "missing": 0,
+    "manifest": [
+      {
+        "alt": "高度人材ポイント計算表（官方様式）",
+        "original": "assets/hsp_point_keisanhyo.pdf.png",
+        "mapped": "assets/manual/hsp-point-keisanhyo-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_point_keisanhyo.pdf.png",
+        "downloadable": "assets/source-files/hsp-point-keisanhyo-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "大阪市課税証明書見本",
+        "original": "assets/kazei_shomei_sample_osaka.png",
+        "mapped": "assets/manual/kazei-shomei-sample-osaka-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/sendai-tax-certificate-sample.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "ねんきん定期便（ハガキ・50歳未満）样式",
+        "original": "assets/nenkin_teikibin_sample_50miman_p1.png",
+        "mapped": "assets/manual/nenkin-teikibin-sample-50miman-p1-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/nenkin-teikibin-hagaki.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "在留カード見本（新旧样式对比）",
+        "original": "assets/zairyu_card_sample.jpg",
+        "mapped": "assets/manual/zairyu-card-sample-jpg.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/residence-card-view.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "高度人材ポイント計算表（官方样式）",
+        "original": "assets/hsp_point_keisanhyo.pdf.png",
+        "mapped": "assets/manual/hsp-point-keisanhyo-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_point_keisanhyo.pdf.png",
+        "downloadable": "assets/source-files/hsp-point-keisanhyo-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "疎明資料（基本例）官方清单",
+        "original": "assets/hsp_somei_shiryo_ichiran.pdf.png",
+        "mapped": "assets/manual/hsp-somei-shiryo-ichiran-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_somei_shiryo_ichiran.pdf.png",
+        "downloadable": "assets/source-files/hsp-somei-shiryo-ichiran-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "高度人材ポイント計算表（詳細版）",
+        "original": "assets/hsp_point_keisanhyo.pdf.png",
+        "mapped": "assets/manual/hsp-point-keisanhyo-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_point_keisanhyo.pdf.png",
+        "downloadable": "assets/source-files/hsp-point-keisanhyo-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "ポイント計算表各項目の疎明資料（基本例）",
+        "original": "assets/hsp_somei_shiryo_ichiran.pdf.png",
+        "mapped": "assets/manual/hsp-somei-shiryo-ichiran-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_somei_shiryo_ichiran.pdf.png",
+        "downloadable": "assets/source-files/hsp-somei-shiryo-ichiran-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "官方「就労資格」提出書類一覧表（情景B/D的基础清单母本）",
+        "original": "assets/eiju_teishutsu_shorui_ichiran_shuro.pdf.png",
+        "mapped": "assets/manual/eiju-teishutsu-shorui-ichiran-shuro-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/work-route-overview.png",
+        "downloadable": "assets/source-files/eiju-teishutsu-shorui-ichiran-shuro-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "永住許可申請書（官方様式）",
+        "original": "assets/eiju_application_form.pdf.png",
+        "mapped": "assets/manual/eiju-application-form-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/eiju-application-form.png",
+        "downloadable": "assets/source-files/eiju-application-form-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "永住許可申請書 記載例（官方填写示范）",
+        "original": "assets/eiju_application_form_kisairei.pdf.png",
+        "mapped": "assets/manual/eiju-application-form-kisairei-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/eiju-application-example.png",
+        "downloadable": "assets/source-files/eiju-application-form-kisairei-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "了解書（日本語版）",
+        "original": "assets/ryokaisho.pdf.png",
+        "mapped": "assets/manual/ryokaisho-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/understanding-letter-ja.png",
+        "downloadable": "assets/source-files/ryokaisho-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "大阪市 課税証明書見本（市民税・府民税・森林環境税証明書）",
+        "original": "assets/kazei_shomei_sample_osaka.png",
+        "mapped": "assets/manual/kazei-shomei-sample-osaka-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/sendai-tax-certificate-sample.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "札幌市 税证明见本（納税通知書＋課税証明書）",
+        "original": "assets/kazei_shomei_sample_sapporo_p2.png",
+        "mapped": "assets/manual/kazei-shomei-sample-sapporo-p2-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/sendai-tax-certificate-sample.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "国税 納税証明書 様式見本（その1〜その4共通様式）",
+        "original": "assets/nta_nozei_shomei_yoshiki_mihon.png",
+        "mapped": "assets/manual/nta-nozei-shomei-yoshiki-mihon-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/nta-online-tax-certificate.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "ねんきん定期便（ハガキ・50歳未満）样式",
+        "original": "assets/nenkin_teikibin_sample_50miman_p1.png",
+        "mapped": "assets/manual/nenkin-teikibin-sample-50miman-p1-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/nenkin-teikibin-hagaki.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "墨田区 住民票（世帯連記式）样本",
+        "original": "assets/juminhyo_sample_sumida_setai.png",
+        "mapped": "assets/manual/juminhyo-sample-sumida-setai-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/resident-record-sample.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "墨田区 住民票（個人票）样本（带逐栏注释）",
+        "original": "assets/juminhyo_sample_sumida_kojin.png",
+        "mapped": "assets/manual/juminhyo-sample-sumida-kojin-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/resident-record-sample.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "身元保証書（永住許可申請用・日本語版）",
+        "original": "assets/mimoto_hoshosho.pdf.png",
+        "mapped": "assets/manual/mimoto-hoshosho-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/identity-guarantee.png",
+        "downloadable": "assets/source-files/mimoto-hoshosho-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "在留カード見本（左：2026年6月13日以前旧样式／右：6月14日起新样式）",
+        "original": "assets/zairyu_card_sample.jpg",
+        "mapped": "assets/manual/zairyu-card-sample-jpg.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/residence-card-view.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "高度人材ポイント計算表（詳細版）",
+        "original": "assets/hsp_point_keisanhyo.pdf.png",
+        "mapped": "assets/manual/hsp-point-keisanhyo-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_point_keisanhyo.pdf.png",
+        "downloadable": "assets/source-files/hsp-point-keisanhyo-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "ポイント計算表各項目の疎明資料（官方基本例）",
+        "original": "assets/hsp_somei_shiryo_ichiran.pdf.png",
+        "mapped": "assets/manual/hsp-somei-shiryo-ichiran-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_somei_shiryo_ichiran.pdf.png",
+        "downloadable": "assets/source-files/hsp-somei-shiryo-ichiran-pdf-png-original.pdf",
+        "status": "mapped"
+      },
+      {
+        "alt": "在留カード見本：左为旧样式，右为2026-06-14起新样式",
+        "original": "assets/zairyu_card_sample.jpg",
+        "mapped": "assets/manual/zairyu-card-sample-jpg.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/outputs/permanent-residency-training/assets/official-previews/residence-card-view.png",
+        "downloadable": null,
+        "status": "mapped"
+      },
+      {
+        "alt": "高度人材ポイント計算表（官方详细版首页）",
+        "original": "assets/hsp_point_keisanhyo.pdf.png",
+        "mapped": "assets/manual/hsp-point-keisanhyo-pdf-png.png",
+        "source": "/Users/martin/Documents/Codex/2026-06-11/new-chat/work/source-manual/assets/hsp_point_keisanhyo.pdf.png",
+        "downloadable": "assets/source-files/hsp-point-keisanhyo-pdf-png-original.pdf",
+        "status": "mapped"
+      }
+    ]
+  },
+  "requirement": "Markdown 手册为唯一主稿；网页结构跟随 11 章和附录；旧资产只作配图证据层。"
+}
